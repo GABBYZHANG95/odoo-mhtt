@@ -14,6 +14,8 @@
 # BRAND_LOGO     path of the logo inside the container (optional; PNG with a
 #                transparent background)
 # COMPANY_NAME   legal name shown on documents (optional)
+# COMPANY_NAME_AR  Arabic legal name (optional): the company tagline, printed
+#                at the top right of every printed document, beside the logo
 #
 # Safe to run again. Reload the browser afterwards; no restart needed.
 import base64
@@ -32,6 +34,8 @@ company = env.ref('base.main_company')
 values = {'primary_color': color, 'secondary_color': dark}
 if os.environ.get('COMPANY_NAME'):
     values['name'] = os.environ['COMPANY_NAME']
+if os.environ.get('COMPANY_NAME_AR'):
+    values['report_header'] = os.environ['COMPANY_NAME_AR']
 if os.environ.get('BRAND_LOGO'):
     with open(os.environ['BRAND_LOGO'], 'rb') as logo:
         values['logo'] = base64.b64encode(logo.read())

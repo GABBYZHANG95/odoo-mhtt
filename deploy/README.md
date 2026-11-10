@@ -35,7 +35,7 @@ docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d
 # 步骤 4：建正式库
 deploy/first_install.sh
 
-# 品牌：logo 和深蓝主题色（先在 brand.env 里填公司全称）
+# 品牌：logo、深蓝主题色、中英阿公司全称（brand.env）
 docker cp deploy/logo.png mhtt-app:/tmp/brand-logo.png
 docker exec -u root mhtt-app chmod 644 /tmp/brand-logo.png
 docker exec -i --env-file deploy/brand.env -e BRAND_LOGO=/tmp/brand-logo.png \
