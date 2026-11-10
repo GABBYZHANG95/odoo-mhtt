@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fixed assets (design doc 6.7.4): equipment from 5,000 SAR a unit,
+         straight line, monthly; computers and laptops 3 years, servers,
+         network equipment and furniture 5 years. Depreciation always goes
+         to G&A (6.4). One asset per unit. -->
+    <data noupdate="1">
+    <record id="journal_assets" model="account.journal">
+        <field name="name">Fixed Assets</field>
+        <field name="code">ASSET</field>
+        <field name="type">general</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="asset_profile_computers" model="account.asset.profile">
+        <field name="name">Computers and laptops (3 years)</field>
+        <field name="account_asset_id" ref="account_asset_computers"/>
+        <field name="account_depreciation_id" ref="account_depreciation_computers"/>
+        <field name="account_expense_depreciation_id" ref="account_ga_depreciation"/>
+        <field name="journal_id" ref="journal_assets"/>
+        <field name="method">linear</field>
+        <field name="method_time">year</field>
+        <field name="method_number">3</field>
+        <field name="method_period">month</field>
+        <field name="prorata" eval="True"/>
+        <field name="open_asset" eval="True"/>
+        <field name="asset_product_item" eval="True"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="asset_profile_servers" model="account.asset.profile">
+        <field name="name">Servers and network equipment (5 years)</field>
+        <field name="account_asset_id" ref="account_asset_servers"/>
+        <field name="account_depreciation_id" ref="account_depreciation_servers"/>
+        <field name="account_expense_depreciation_id" ref="account_ga_depreciation"/>
+        <field name="journal_id" ref="journal_assets"/>
+        <field name="method">linear</field>
+        <field name="method_time">year</field>
+        <field name="method_number">5</field>
+        <field name="method_period">month</field>
+        <field name="prorata" eval="True"/>
+        <field name="open_asset" eval="True"/>
+        <field name="asset_product_item" eval="True"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="asset_profile_furniture" model="account.asset.profile">
+        <field name="name">Furniture (5 years)</field>
+        <field name="account_asset_id" ref="account_asset_furniture"/>
+        <field name="account_depreciation_id" ref="account_depreciation_furniture"/>
+        <field name="account_expense_depreciation_id" ref="account_ga_depreciation"/>
+        <field name="journal_id" ref="journal_assets"/>
+        <field name="method">linear</field>
+        <field name="method_time">year</field>
+        <field name="method_number">5</field>
+        <field name="method_period">month</field>
+        <field name="prorata" eval="True"/>
+        <field name="open_asset" eval="True"/>
+        <field name="asset_product_item" eval="True"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="account_asset_computers" model="account.account">
+        <field name="asset_profile_id" ref="asset_profile_computers"/>
+    </record>
+    <record id="account_asset_servers" model="account.account">
+        <field name="asset_profile_id" ref="asset_profile_servers"/>
+    </record>
+    <record id="account_asset_furniture" model="account.account">
+        <field name="asset_profile_id" ref="asset_profile_furniture"/>
+    </record>
+    </data>
+
+    <!-- post depreciation every day for what is due (OCA ships it inactive) -->
+    <record id="account_asset_management.ir_cron_assets_generator" model="ir.cron">
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Maintenance revenue (design doc 6.7.4): invoiced up front, kept as
+         deferred revenue and recognised monthly; 12 months unless the CFO
+         changes the spread on the invoice line. -->
+    <data noupdate="1">
+    <record id="journal_spread" model="account.journal">
+        <field name="name">Revenue Recognition</field>
+        <field name="code">SPRD</field>
+        <field name="type">general</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="spread_template_maintenance" model="account.spread.template">
+        <field name="name">Maintenance revenue (monthly)</field>
+        <field name="spread_type">sale</field>
+        <field name="spread_journal_id" ref="journal_spread"/>
+        <field name="spread_account_id" ref="account_deferred_maintenance"/>
+        <field name="exp_rev_account_id" ref="account_maintenance_revenue"/>
+        <field name="period_number">12</field>
+        <field name="period_type">month</field>
+        <field name="auto_spread" eval="True"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="spread_template_maintenance_auto" model="account.spread.template.auto">
+        <field name="template_id" ref="spread_template_maintenance"/>
+        <field name="name">Maintenance revenue account</field>
+        <field name="account_id" ref="account_maintenance_revenue"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    </data>
+</odoo>

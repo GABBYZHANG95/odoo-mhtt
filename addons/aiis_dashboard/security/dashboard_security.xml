@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Design doc 6.9 (#66): the operations dashboard is for the CEO and
+         the Chairman only. Kept in step with the positions' holders. -->
+    <record id="group_operations_dashboard" model="res.groups">
+        <field name="name">Operations Dashboard (CEO, Chairman)</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="comment">The Dashboard menu: company-wide operating figures. Members are set from the CEO and Chairman positions.</field>
+    </record>
+</odoo>

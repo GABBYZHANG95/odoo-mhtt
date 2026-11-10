@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Exchange rates against SAR (the company's base currency).
+         SAR/USD has been a fixed peg since 1986: 1 USD = 3.75 SAR.
+         CNY is a floating market rate (~7.2 CNY/USD as of writing) -
+         update data/currency_rate_data.xml periodically, this is not
+         auto-refreshed. -->
+    <record id="rate_sar_base" model="res.currency.rate">
+        <field name="currency_id" ref="base.SAR"/>
+        <field name="name" eval="time.strftime('%Y-%m-%d')"/>
+        <field name="rate">1.0</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="rate_usd_vs_sar" model="res.currency.rate">
+        <field name="currency_id" ref="base.USD"/>
+        <field name="name" eval="time.strftime('%Y-%m-%d')"/>
+        <field name="rate" eval="1/3.75"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="rate_cny_vs_sar" model="res.currency.rate">
+        <field name="currency_id" ref="base.CNY"/>
+        <field name="name" eval="time.strftime('%Y-%m-%d')"/>
+        <field name="rate" eval="7.2/3.75"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+</odoo>

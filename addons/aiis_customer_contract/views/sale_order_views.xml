@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_order_form_contract" model="ir.ui.view">
+        <field name="name">sale.order.form.customer.contract</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Confirm only shows once the contract is approved; the
+                 server-side check in action_confirm() still applies to
+                 every other way of confirming. -->
+            <xpath expr="//header/button[@id='action_confirm']" position="attributes">
+                <attribute name="invisible">state != 'sent' or not contract_ok</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_confirm' and not(@id)]" position="attributes">
+                <attribute name="invisible">state != 'draft' or not contract_ok</attribute>
+            </xpath>
+            <xpath expr="//header/button[@id='action_confirm']" position="before">
+                <field name="contract_ok" invisible="1"/>
+                <field name="contract_id" invisible="1"/>
+                <button name="action_request_contract" string="Request Contract Approval" type="object"
+                        class="btn-primary" invisible="state not in ('draft', 'sent') or contract_id"/>
+            </xpath>
+            <xpath expr="//header" position="after">
+                <div class="alert alert-info mb-0" role="alert"
+                     invisible="state not in ('draft', 'sent') or contract_ok">
+                    This quotation needs an approved customer contract before it can be confirmed.
+                    <span invisible="contract_id">Once the customer has sent their PO, click
+                        <b>Request Contract Approval</b>.</span>
+                    <span invisible="not contract_id">Contract status:
+                        <field name="contract_state" class="oe_inline" readonly="1"/>.</span>
+                </div>
+            </xpath>
+            <div name="button_box" position="inside">
+                <button name="action_view_contract" type="object" class="oe_stat_button"
+                        icon="fa-file-text-o" invisible="not contract_id">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Contract</span>
+                        <span class="o_stat_value"><field name="contract_state" readonly="1"/></span>
+                    </div>
+                </button>
+            </div>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Balance Sheet, design doc 6.7.6.
+         Generated from the report lines of account.account (aiis_report_line);
+         see models/account_account.py. -->
+    <record id="mis_report_balance_sheet" model="mis.report">
+        <field name="name">MHTT Balance Sheet</field>
+        <field name="description">Accrual basis - SAR - balances at the end of each column</field>
+        <field name="style_id" ref="mis_style_base"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_current_assets" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">10</field>
+        <field name="name">current_assets</field>
+        <field name="description">Current assets</field>
+        <field name="expression">bank + receivable + vat_input + prepaid + other_receivable</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_bank" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">20</field>
+        <field name="name">bank</field>
+        <field name="description">Bank and cash</field>
+        <field name="expression">bale[('aiis_report_line', '=', 'bank')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_receivable" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">30</field>
+        <field name="name">receivable</field>
+        <field name="description">Accounts receivable</field>
+        <field name="expression">bale[('aiis_report_line', '=', 'receivable')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_vat_input" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">40</field>
+        <field name="name">vat_input</field>
+        <field name="description">Input VAT</field>
+        <field name="expression">bale[('aiis_report_line', '=', 'vat_input')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_prepaid" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">50</field>
+        <field name="name">prepaid</field>
+        <field name="description">Prepayments to suppliers</field>
+        <field name="expression">bale[('aiis_report_line', '=', 'prepaid')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_other_receivable" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">60</field>
+        <field name="name">other_receivable</field>
+        <field name="description">Other receivables</field>
+        <field name="expression">bale[('aiis_report_line', '=', 'other_receivable')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_non_current_assets" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">70</field>
+        <field name="name">non_current_assets</field>
+        <field name="description">Non-current assets</field>
+        <field name="expression">fixed_assets + other_non_current_assets</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_fixed_assets" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">80</field>
+        <field name="name">fixed_assets</field>
+        <field name="description">Fixed assets (cost less depreciation)</field>
+        <field name="expression">bale[('aiis_report_line', '=', 'fixed_assets')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_other_non_current_assets" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">90</field>
+        <field name="name">other_non_current_assets</field>
+        <field name="description">Other non-current assets</field>
+        <field name="expression">bale[('aiis_report_line', '=', 'other_non_current_assets')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_total_assets" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">100</field>
+        <field name="name">total_assets</field>
+        <field name="description">Total assets</field>
+        <field name="expression">current_assets + non_current_assets</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_total"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_current_liabilities" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">110</field>
+        <field name="name">current_liabilities</field>
+        <field name="description">Current liabilities</field>
+        <field name="expression">payable + vat_output + accrued + payroll_payable + deferred_revenue + customer_advances + zakat_payable + income_tax_payable</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_payable" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">120</field>
+        <field name="name">payable</field>
+        <field name="description">Accounts payable</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'payable')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_vat_output" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">130</field>
+        <field name="name">vat_output</field>
+        <field name="description">VAT payable</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'vat_output')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_accrued" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">140</field>
+        <field name="name">accrued</field>
+        <field name="description">Accrued expenses</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'accrued')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_payroll_payable" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">150</field>
+        <field name="name">payroll_payable</field>
+        <field name="description">Salaries and employee payables</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'payroll_payable')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_deferred_revenue" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">160</field>
+        <field name="name">deferred_revenue</field>
+        <field name="description">Deferred maintenance revenue</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'deferred_revenue')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_customer_advances" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">170</field>
+        <field name="name">customer_advances</field>
+        <field name="description">Customer advances</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'customer_advances')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_zakat_payable" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">180</field>
+        <field name="name">zakat_payable</field>
+        <field name="description">Zakat payable</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'zakat_payable')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_income_tax_payable" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">190</field>
+        <field name="name">income_tax_payable</field>
+        <field name="description">Income tax payable</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'income_tax_payable')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_non_current_liabilities" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">200</field>
+        <field name="name">non_current_liabilities</field>
+        <field name="description">Non-current liabilities</field>
+        <field name="expression">eosb</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_eosb" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">210</field>
+        <field name="name">eosb</field>
+        <field name="description">End-of-service benefits provision</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'eosb')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_total_liabilities" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">220</field>
+        <field name="name">total_liabilities</field>
+        <field name="description">Total liabilities</field>
+        <field name="expression">current_liabilities + non_current_liabilities</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_total"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_equity" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">230</field>
+        <field name="name">equity</field>
+        <field name="description">Equity</field>
+        <field name="expression">share_capital + retained_earnings + current_year_profit</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_share_capital" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">240</field>
+        <field name="name">share_capital</field>
+        <field name="description">Share capital</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'share_capital')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_retained_earnings" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">250</field>
+        <field name="name">retained_earnings</field>
+        <field name="description">Retained earnings</field>
+        <field name="expression">-bale[('aiis_report_line', '=', 'retained_earnings')] - balu[]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_current_year_profit" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">260</field>
+        <field name="name">current_year_profit</field>
+        <field name="description">Current year profit</field>
+        <field name="expression">-bale[('include_initial_balance', '=', False)]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_total_equity" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">270</field>
+        <field name="name">total_equity</field>
+        <field name="description">Total equity</field>
+        <field name="expression">equity</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_total"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_balance_sheet_kpi_check" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_balance_sheet"/>
+        <field name="sequence">280</field>
+        <field name="name">check</field>
+        <field name="description">Check: assets - liabilities - equity (must be 0)</field>
+        <field name="expression">total_assets - total_liabilities - total_equity</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_margin"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+</odoo>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Quotation / Sales Order numbers: S00023 -> SO/2026/00024, in line with
+         PR/2026/ and CT/2026/. Existing orders keep their old numbers. -->
+    <function model="ir.sequence" name="write">
+        <value model="ir.sequence" eval="[ref('sale.seq_sale_order')]"/>
+        <value eval="{'prefix': 'SO/%(year)s/', 'padding': 5}"/>
+    </function>
+
+</odoo>

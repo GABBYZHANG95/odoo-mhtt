@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Finance › Overview and Reports (design doc 6.8.1): CFO, CEO and Chairman only -->
+    <menuitem id="menu_finance_overview"
+              name="Overview"
+              parent="aiis_department_menu.menu_aiis_finance_root"
+              action="action_finance_overview"
+              groups="group_finance_board"
+              sequence="1"/>
+
+    <menuitem id="menu_finance_reports"
+              name="Reports"
+              parent="aiis_department_menu.menu_aiis_finance_root"
+              groups="group_finance_board"
+              sequence="5"/>
+    <menuitem id="menu_report_profit_loss" name="Profit &amp; Loss" parent="menu_finance_reports"
+              action="action_report_profit_loss" sequence="10"/>
+    <menuitem id="menu_report_balance_sheet" name="Balance Sheet" parent="menu_finance_reports"
+              action="action_report_balance_sheet" sequence="20"/>
+    <menuitem id="menu_report_receivables_payables" name="Receivables &amp; Payables" parent="menu_finance_reports"
+              sequence="30"/>
+    <menuitem id="menu_report_aged_balance" name="Aged Balance" parent="menu_report_receivables_payables"
+              action="action_aged_balance" sequence="10"/>
+    <menuitem id="menu_report_partner_statements" name="Partner Statements" parent="menu_report_receivables_payables"
+              action="action_partner_statements" sequence="20"/>
+    <menuitem id="menu_report_cash_flow" name="Cash Flow" parent="menu_finance_reports"
+              action="action_finance_cash_flow" sequence="40"/>
+    <menuitem id="menu_report_checks" name="Checks" parent="menu_finance_reports"
+              action="action_finance_checks" sequence="50"/>
+
+    <!-- the cash-basis menus are now the Cash Flow report (6.8.1) -->
+    <record id="aiis_finance_dashboard.menu_aiis_finance_revenue" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="aiis_finance_dashboard.menu_aiis_finance_cost" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="aiis_finance_dashboard.menu_aiis_finance_expense" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="aiis_finance_dashboard.menu_aiis_finance_overall" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- the OCA report menus inside Invoicing › Reporting: board only too -->
+    <record id="account_financial_report.menu_oca_reports" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('group_finance_board')])]"/>
+    </record>
+    <record id="mis_builder.mis_report_finance_menu" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('group_finance_board')])]"/>
+    </record>
+
+    <!-- booking rules and personnel costs -->
+    <menuitem id="menu_account_mapping" name="Expense Account Mapping"
+              parent="account.menu_finance_configuration" action="action_account_mapping"
+              groups="account.group_account_manager" sequence="15"/>
+
+    <menuitem id="menu_personnel_cost" name="Personnel Costs" parent="hr.menu_hr_root"
+              action="action_personnel_cost" groups="hr.group_hr_user,group_finance_board" sequence="85"/>
+    <menuitem id="menu_personnel_cost_type" name="Personnel Cost Types" parent="hr.menu_human_resources_configuration"
+              action="action_personnel_cost_type" groups="hr.group_hr_user" sequence="60"/>
+</odoo>

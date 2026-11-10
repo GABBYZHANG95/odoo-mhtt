@@ -1,0 +1,17 @@
+// Left-to-right gradient, light to dark shade of the brand colour
+$aiis-gradient: linear-gradient(90deg, $aiis-brand-light 0%, $aiis-brand-dark 100%);
+
+.o_main_navbar {
+    background: $aiis-gradient;
+    border-bottom-color: $aiis-brand-dark;
+}
+
+.btn-primary:not(:disabled):not(.disabled) {
+    background-image: linear-gradient(135deg, $aiis-brand-light 0%, $aiis-brand-strong 100%);
+    border-color: $aiis-brand-strong;
+
+    &:hover, &:focus, &:active, &.active {
+        background-image: linear-gradient(135deg, $aiis-brand 0%, $aiis-brand-dark 100%);
+        border-color: $aiis-brand-dark;
+    }
+}

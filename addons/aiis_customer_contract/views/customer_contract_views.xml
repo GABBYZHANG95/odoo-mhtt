@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_customer_contract_form" model="ir.ui.view">
+        <field name="name">customer.contract.form</field>
+        <field name="model">customer.contract</field>
+        <field name="arch" type="xml">
+            <form string="Customer Contract">
+                <header>
+                    <button name="action_submit" string="Submit for Approval" type="object"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object"
+                            class="oe_highlight" invisible="state != 'submitted'"/>
+                    <button name="action_reject" string="Reject" type="object"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object"
+                            invisible="state not in ('submitted', 'rejected') and not amount_mismatch"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,confirmed"/>
+                </header>
+                <div class="alert alert-warning mb-0" role="alert" invisible="not amount_mismatch">
+                    The quotation total changed after this contract was submitted
+                    (submitted: <field name="approved_amount" class="oe_inline" readonly="1"/>).
+                    Reset the contract to draft and submit it again before the
+                    Sales Order can be confirmed.
+                </div>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sale_order" type="object" class="oe_stat_button"
+                                icon="fa-dollar" invisible="not sale_order_id">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Quotation / SO</span>
+                                <span class="o_stat_value"><field name="sale_order_id" readonly="1" options="{'no_open': True}"/></span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="sale_order_id or state != 'draft'"/>
+                            <field name="customer_po_ref" readonly="state != 'draft'"
+                                   required="sale_order_id and state == 'draft'"/>
+                            <field name="customer_po_file" filename="customer_po_filename"
+                                   readonly="state != 'draft'"
+                                   required="sale_order_id and state == 'draft'"/>
+                            <field name="customer_po_filename" invisible="1"/>
+                            <field name="salesperson_id" readonly="state != 'draft'"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="manager_id" readonly="1" string="Approver"/>
+                        </group>
+                        <group>
+                            <field name="contract_date" readonly="state != 'draft'"/>
+                            <field name="start_date" readonly="state != 'draft'"/>
+                            <field name="end_date" readonly="state != 'draft'"/>
+                            <field name="currency_id" readonly="sale_order_id or state != 'draft'"/>
+                            <field name="analytic_account_id" readonly="state != 'draft'"/>
+                            <field name="approved_amount" invisible="not approved_amount"/>
+                            <field name="amount_mismatch" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="reason" placeholder="What is this deal about?" readonly="state != 'draft'"/>
+                    <notebook>
+                        <page string="Quotation Lines" name="quotation_lines" invisible="not sale_order_id or line_ids">
+                            <field name="sale_line_ids" readonly="1">
+                                <tree>
+                                    <field name="display_type" column_invisible="1"/>
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom"/>
+                                    <field name="price_unit"/>
+                                    <field name="tax_id" widget="many2many_tags"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="price_subtotal"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="estimated_total"/>
+                            </group>
+                        </page>
+                        <page string="Items" name="legacy_items" invisible="not line_ids">
+                            <field name="line_ids" readonly="1">
+                                <tree>
+                                    <field name="product_id"/>
+                                    <field name="description"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="unit_price"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="subtotal" sum="Total"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="estimated_total"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <div invisible="state not in ('submitted', 'rejected')">
+                        <field name="rejection_reason" placeholder="Reason for rejection (required to reject)"
+                               readonly="state != 'submitted'"/>
+                    </div>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_customer_contract_tree" model="ir.ui.view">
+        <field name="name">customer.contract.tree</field>
+        <field name="model">customer.contract</field>
+        <field name="arch" type="xml">
+            <tree string="Customer Contracts" decoration-muted="state == 'rejected'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="sale_order_id"/>
+                <field name="customer_po_ref"/>
+                <field name="salesperson_id"/>
+                <field name="department_id"/>
+                <field name="contract_date"/>
+                <field name="estimated_total" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('approved','confirmed','converted')"
+                       decoration-danger="state == 'rejected'"
+                       decoration-info="state == 'submitted'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_customer_contract_search" model="ir.ui.view">
+        <field name="name">customer.contract.search</field>
+        <field name="model">customer.contract</field>
+        <field name="arch" type="xml">
+            <search string="Customer Contracts">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="sale_order_id"/>
+                <field name="customer_po_ref"/>
+                <field name="salesperson_id"/>
+                <field name="department_id"/>
+                <filter string="My Contracts" name="filter_mine" domain="[('salesperson_id.user_id','=',uid)]"/>
+                <filter string="To Approve By Me" name="filter_to_approve"
+                        domain="[('manager_id.user_id','=',uid),('state','=','submitted')]"/>
+                <separator/>
+                <filter string="Draft" name="filter_draft" domain="[('state','=','draft')]"/>
+                <filter string="Submitted" name="filter_submitted" domain="[('state','=','submitted')]"/>
+                <filter string="Approved" name="filter_approved" domain="[('state','=','approved')]"/>
+                <filter string="Rejected" name="filter_rejected" domain="[('state','=','rejected')]"/>
+                <filter string="SO Confirmed" name="filter_confirmed" domain="[('state','in',('confirmed','converted'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="groupby_state" context="{'group_by':'state'}"/>
+                    <filter string="Department" name="groupby_department" context="{'group_by':'department_id'}"/>
+                    <filter string="Salesperson" name="groupby_salesperson" context="{'group_by':'salesperson_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_customer_contract" model="ir.actions.act_window">
+        <field name="name">Customer Contracts</field>
+        <field name="res_model">customer.contract</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_customer_contract_search"/>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No customer contract requests yet
+            </p>
+            <p>
+                Contract requests are started from a quotation: once the
+                customer has sent their PO, open the quotation and click
+                "Request Contract Approval". The quotation can only be
+                confirmed into a Sales Order after the manager approves.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_customer_contract_to_approve" model="ir.actions.act_window">
+        <field name="name">Contracts To Approve</field>
+        <field name="res_model">customer.contract</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_customer_contract_search"/>
+        <field name="domain">[('manager_id.user_id','=',uid),('state','=','submitted')]</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+</odoo>

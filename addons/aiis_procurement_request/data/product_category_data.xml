@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Product category tree, split by what the purchase is FOR - that is
+        what Finance needs (Cost vs Expense), not what the item physically
+        is: a server bought for a customer project is Project Cost, the
+        same server for our own office is Internal Expense.
+
+        noupdate: created once on install, then maintained by the team in
+        Purchase > Configuration > Product Categories (rename, add
+        sub-categories) - upgrading the module won't undo those edits.
+        The two roots are referenced from code (default category for
+        products created when a PR becomes a PO), so keep them.
+
+        Which account each category books to is set by
+        aiis_finance_dashboard; it also hangs its existing categories
+        (Resale Software Licenses, Labor Cost, Office Supplies, IT &
+        Software Services) under these two roots.
+    -->
+    <data noupdate="1">
+
+        <record id="product_category_project_cost" model="product.category">
+            <field name="name">Project Cost (for customers)</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+        <record id="product_category_project_hardware" model="product.category">
+            <field name="name">Hardware</field>
+            <field name="parent_id" ref="product_category_project_cost"/>
+        </record>
+        <record id="product_category_project_cloud" model="product.category">
+            <field name="name">Cloud Services</field>
+            <field name="parent_id" ref="product_category_project_cost"/>
+        </record>
+        <record id="product_category_project_subcontracting" model="product.category">
+            <field name="name">Subcontracting</field>
+            <field name="parent_id" ref="product_category_project_cost"/>
+        </record>
+
+        <record id="product_category_internal_expense" model="product.category">
+            <field name="name">Internal Expense (own use)</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+        <record id="product_category_internal_it_equipment" model="product.category">
+            <field name="name">IT Equipment</field>
+            <field name="parent_id" ref="product_category_internal_expense"/>
+        </record>
+        <record id="product_category_internal_other_admin" model="product.category">
+            <field name="name">Other Admin</field>
+            <field name="parent_id" ref="product_category_internal_expense"/>
+        </record>
+
+    </data>
+
+</odoo>

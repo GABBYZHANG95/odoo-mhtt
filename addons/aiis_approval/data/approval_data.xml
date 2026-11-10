@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The preset positions; holders are set by an administrator
+         (Settings > Approvals > Positions). noupdate so a reassigned holder
+         survives module upgrades. -->
+    <data noupdate="1">
+        <record id="position_ceo" model="aiis.approval.position">
+            <field name="name">CEO</field>
+            <field name="code">ceo</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="position_chairman" model="aiis.approval.position">
+            <field name="name">Chairman</field>
+            <field name="code">chairman</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="position_cfo" model="aiis.approval.position">
+            <field name="name">CFO</field>
+            <field name="code">cfo</field>
+            <field name="sequence">30</field>
+        </record>
+    </data>
+
+    <!-- The to-do an approver gets while a document waits for them -->
+    <record id="mail_activity_approval" model="mail.activity.type">
+        <field name="name">Approval</field>
+        <field name="icon">fa-check</field>
+        <field name="delay_count">0</field>
+    </record>
+
+    <!-- to the submitter when a document is rejected; done once it is submitted again -->
+    <record id="mail_activity_rejected" model="mail.activity.type">
+        <field name="name">Rejected</field>
+        <field name="icon">fa-undo</field>
+        <field name="delay_count">0</field>
+    </record>
+
+</odoo>

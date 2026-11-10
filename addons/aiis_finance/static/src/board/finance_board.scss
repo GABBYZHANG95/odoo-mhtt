@@ -1,0 +1,85 @@
+// Brand colour of this database (aiis_theme, from the company primary
+// colour); Odoo's primary colour when the theme is not installed.
+$aiis-brand: $o-brand-primary !default;
+$aiis-board-accent: darken($aiis-brand, 12%);
+$aiis-board-tint: mix($aiis-brand, #FFFFFF, 9%);
+
+.o_aiis_finance_board {
+    background-color: $o-view-background-color;
+
+    .o_aiis_filter {
+        display: flex;
+        flex-direction: column;
+        font-size: 0.8rem;
+        color: $text-muted;
+        min-width: 8rem;
+    }
+
+    .o_aiis_card {
+        border: 1px solid $border-color;
+        border-top: 4px solid $aiis-board-accent;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        cursor: pointer;
+        &:hover {
+            background-color: $aiis-board-tint;
+        }
+    }
+    .o_aiis_card_label {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: $text-muted;
+    }
+    .o_aiis_card_value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: $aiis-board-accent;
+    }
+    .o_aiis_card_hint {
+        font-size: 0.8rem;
+        color: $text-muted;
+    }
+
+    .o_aiis_table {
+        font-variant-numeric: tabular-nums;
+        th {
+            background-color: $aiis-board-tint;
+        }
+        .o_aiis_total td {
+            border-top: 2px solid $aiis-board-accent;
+        }
+    }
+
+    .o_aiis_chart {
+        width: 100%;
+        max-width: 640px;
+        height: auto;
+        text {
+            font-size: 11px;
+            fill: $text-muted;
+        }
+        polyline {
+            stroke-width: 2;
+        }
+    }
+    .o_aiis_line_receipts {
+        stroke: $aiis-board-accent;
+        fill: $aiis-board-accent;
+    }
+    .o_aiis_line_project {
+        stroke: #C77D1A;
+        fill: #C77D1A;
+    }
+    polyline.o_aiis_line_receipts, polyline.o_aiis_line_project {
+        fill: none;
+    }
+    .o_aiis_swatch {
+        display: inline-block;
+        width: 0.8rem;
+        height: 0.8rem;
+        border-radius: 2px;
+        &.o_aiis_line_receipts { background-color: $aiis-board-accent; }
+        &.o_aiis_line_project { background-color: #C77D1A; }
+    }
+}

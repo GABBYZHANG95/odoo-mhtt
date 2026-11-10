@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="aiis_dashboard.OperationsDashboard">
+        <div class="o_action o_aiis_dash h-100 overflow-auto">
+            <nav class="o_aiis_dash_tabs" aria-label="Dashboard pages">
+                <t t-foreach="pages" t-as="page" t-key="page[0]">
+                    <button type="button" t-att-class="'o_aiis_dash_tab' + (state.page === page[0] ? ' active' : '')"
+                            t-att-aria-current="state.page === page[0] ? 'page' : false"
+                            t-on-click="() => this.setPage(page[0])" t-esc="page[1]"/>
+                </t>
+            </nav>
+
+            <div class="o_aiis_dash_body">
+                <section class="o_aiis_dash_period" aria-label="Period">
+                    <div class="btn-group" role="group" aria-label="Period type">
+                        <t t-foreach="periods" t-as="period" t-key="period[0]">
+                            <button type="button"
+                                    t-att-class="'btn ' + (state.params.period === period[0] ? 'btn-primary' : 'btn-outline-secondary')"
+                                    t-att-aria-pressed="state.params.period === period[0] ? 'true' : 'false'"
+                                    t-on-click="() => this.setPeriod(period[0])" t-esc="period[1]"/>
+                        </t>
+                    </div>
+                    <div class="d-flex align-items-center gap-2" t-if="state.data">
+                        <button type="button" class="btn btn-outline-secondary o_aiis_dash_arrow" aria-label="Previous period"
+                                t-on-click="() => this.shift(-1)">‹</button>
+                        <div class="o_aiis_dash_title">
+                            <div class="fw-bold" t-esc="state.data.period.title"/>
+                            <div class="text-muted small" t-esc="state.data.period.sub"/>
+                        </div>
+                        <button type="button" class="btn btn-outline-secondary o_aiis_dash_arrow" aria-label="Next period"
+                                t-att-disabled="!state.data.period.next_date" t-on-click="() => this.shift(1)">›</button>
+                        <button type="button" class="btn btn-link btn-sm" t-if="state.data.period.next_date"
+                                t-on-click="thisPeriod">Today</button>
+                    </div>
+                    <div class="small text-muted" t-if="state.data">
+                        Compared with <strong class="text-body" t-esc="state.data.period.compare"/>
+                    </div>
+                    <div class="flex-grow-1"/>
+                    <t t-if="state.data">
+                        <t t-foreach="state.data.filters" t-as="filter" t-key="filter.key">
+                            <label class="d-flex align-items-center gap-2 small">
+                                <span t-esc="filter.label"/>
+                                <select class="form-select form-select-sm" t-on-change="(ev) => this.onFilter(filter.key, ev)">
+                                    <t t-foreach="filter.options" t-as="option" t-key="option.value">
+                                        <option t-att-value="option.value" t-att-selected="option.value === filter.value"
+                                                t-esc="option.label"/>
+                                    </t>
+                                </select>
+                            </label>
+                        </t>
+                    </t>
+                </section>
+
+                <div t-if="state.loading and !state.data" class="text-muted p-3">Loading…</div>
+                <t t-if="state.data">
+                    <div t-att-class="'o_aiis_dash_content' + (state.loading ? ' o_aiis_dash_loading' : '')">
+                        <section class="o_aiis_dash_cards" aria-label="Key figures">
+                            <t t-foreach="state.data.cards" t-as="card" t-key="card_index">
+                                <article class="o_aiis_dash_card">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+                                        <h2 class="o_aiis_dash_card_title" t-esc="card.title"/>
+                                        <t t-call="aiis_dashboard.Tag"><t t-set="tag" t-value="card.tag"/></t>
+                                    </div>
+                                    <div class="o_aiis_dash_card_value" t-esc="card.value"/>
+                                    <div t-att-class="'o_aiis_dash_card_delta ' + toneClass(card.tone)" t-esc="card.delta"/>
+                                    <div class="o_aiis_dash_card_note" t-esc="card.note"/>
+                                </article>
+                            </t>
+                        </section>
+
+                        <section class="o_aiis_dash_blocks">
+                            <t t-foreach="state.data.blocks" t-as="block" t-key="block_index">
+                                <article t-att-class="blockClass(block)">
+                                    <div class="d-flex flex-wrap align-items-baseline justify-content-between gap-2">
+                                        <h3 class="o_aiis_dash_block_title" t-esc="block.title"/>
+                                        <t t-call="aiis_dashboard.Tag"><t t-set="tag" t-value="block.tag"/></t>
+                                    </div>
+                                    <div class="o_aiis_dash_block_sub" t-if="block.sub" t-esc="block.sub"/>
+                                    <t t-if="block.type === 'chart'" t-call="aiis_dashboard.Chart"/>
+                                    <t t-if="block.type === 'bars'" t-call="aiis_dashboard.Bars"/>
+                                    <t t-if="block.type === 'funnel'" t-call="aiis_dashboard.Funnel"/>
+                                    <t t-if="block.type === 'table'">
+                                        <t t-call="aiis_dashboard.Table"><t t-set="table" t-value="block"/></t>
+                                    </t>
+                                    <t t-if="block.type === 'notes'" t-call="aiis_dashboard.Notes"/>
+                                </article>
+                            </t>
+                        </section>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="aiis_dashboard.Tag">
+        <span t-if="tag === 'now'" class="o_aiis_dash_tag o_aiis_dash_tag_now" title="The current state, whatever the period">NOW</span>
+        <span t-if="tag === 'finance'" class="o_aiis_dash_tag o_aiis_dash_tag_finance" title="The same calculation as the Finance board">FROM FINANCE</span>
+    </t>
+
+    <t t-name="aiis_dashboard.Chart">
+        <div t-if="block.chart.empty" class="text-muted small mt-2">Nothing in this period.</div>
+        <t t-else="">
+        <div class="o_aiis_dash_legend">
+            <t t-foreach="block.chart.labels" t-as="label" t-key="label_index">
+                <span><span class="o_aiis_dash_swatch" t-attf-style="background: {{ colors[label_index % colors.length] }}"/><t t-esc="label"/></span>
+            </t>
+        </div>
+        <div class="o_aiis_dash_chart" role="img" t-att-aria-label="block.title">
+            <div class="o_aiis_dash_chart_bars">
+                <t t-foreach="chartBuckets(block)" t-as="bucket" t-key="bucket.key">
+                    <button type="button" t-att-class="'o_aiis_dash_bucket' + (bucket.future ? ' future' : '')"
+                            t-att-disabled="bucket.future" t-att-title="bucket.label"
+                            t-on-click="() => this.drill(bucket)">
+                        <span class="o_aiis_dash_caption" t-esc="bucket.caption"/>
+                        <span t-att-class="'o_aiis_dash_stack' + (block.grouped ? ' grouped' : '')">
+                            <t t-foreach="bucket.segments" t-as="segment" t-key="segment.index">
+                                <span class="o_aiis_dash_segment"
+                                      t-attf-style="height: {{ segment.height }}px; background: {{ segment.color }}"/>
+                            </t>
+                        </span>
+                    </button>
+                </t>
+            </div>
+            <div class="o_aiis_dash_chart_labels">
+                <t t-foreach="block.chart.buckets" t-as="bucket" t-key="bucket.key">
+                    <span t-att-class="(bucket.today ? 'today' : '') + (bucket.weekend ? ' weekend' : '')" t-esc="bucket.label"/>
+                </t>
+            </div>
+        </div>
+        <div class="o_aiis_dash_block_sub mt-2">Click a bar to open that day or month. Days after today stay empty: actual figures only.</div>
+        </t>
+    </t>
+
+    <t t-name="aiis_dashboard.Bars">
+        <div t-if="!block.rows.length" class="text-muted small mt-2" t-esc="block.empty or 'Nothing in this period.'"/>
+        <div class="o_aiis_dash_barlist">
+            <t t-foreach="block.rows" t-as="row" t-key="row_index">
+                <div class="o_aiis_dash_barrow">
+                    <span t-esc="row.label"/>
+                    <span class="o_aiis_dash_track"><span t-att-class="'o_aiis_dash_fill' + (row.warn ? ' warn' : '')" t-attf-style="width: {{ row.pct }}%"/></span>
+                    <span t-att-class="'fw-bold text-end' + (row.warn ? ' o_aiis_tone_up' : '')" t-esc="row.display"/>
+                </div>
+            </t>
+        </div>
+        <t t-if="block.table">
+            <h4 class="o_aiis_dash_subtitle">
+                <t t-esc="block.table.title"/>
+                <t t-call="aiis_dashboard.Tag"><t t-set="tag" t-value="block.table.tag"/></t>
+            </h4>
+            <t t-call="aiis_dashboard.Table"><t t-set="table" t-value="block.table"/></t>
+        </t>
+    </t>
+
+    <t t-name="aiis_dashboard.Funnel">
+        <div class="o_aiis_dash_funnel">
+            <t t-foreach="block.rows" t-as="row" t-key="row_index">
+                <div class="o_aiis_dash_funnel_row">
+                    <span t-esc="row.label"/>
+                    <span class="o_aiis_dash_funnel_track">
+                        <span class="o_aiis_dash_funnel_bar" t-attf-style="width: {{ row.pct }}%" t-esc="row.count"/>
+                    </span>
+                    <span class="fw-bold text-end" t-esc="row.display"/>
+                </div>
+            </t>
+        </div>
+        <div class="small mt-3" t-esc="block.footer"/>
+    </t>
+
+    <t t-name="aiis_dashboard.Table">
+        <div t-if="!table.rows.length" class="text-muted small mt-2" t-esc="table.empty or 'Nothing to show.'"/>
+        <div class="table-responsive" t-else="">
+            <table class="table table-sm o_aiis_dash_table">
+                <thead t-if="table.columns">
+                    <tr>
+                        <t t-foreach="table.columns" t-as="column" t-key="column_index">
+                            <th t-att-class="(column.align === 'end' ? 'text-end' : '') + (column.meter ? ' o_aiis_dash_meter_col' : '')" t-esc="column.label"/>
+                        </t>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="table.rows" t-as="row" t-key="row_index">
+                        <tr>
+                            <t t-foreach="row" t-as="cell" t-key="cell_index">
+                                <td t-att-class="(table.columns and table.columns[cell_index] and table.columns[cell_index].align === 'end' ? 'text-end ' : '') + toneClass(cell.tone) + (cell.bold ? ' fw-bold' : '')">
+                                    <t t-if="cell.meter !== undefined">
+                                        <span class="d-flex align-items-center gap-2">
+                                            <span class="o_aiis_dash_track"><span t-att-class="'o_aiis_dash_fill' + (cell.tone === 'up' ? ' warn' : '')" t-attf-style="width: {{ cell.meter }}%"/></span>
+                                            <span class="o_aiis_dash_meter_text" t-esc="cell.text"/>
+                                        </span>
+                                    </t>
+                                    <t t-elif="cell.open">
+                                        <a href="#" t-on-click.prevent="() => this.open(cell)" t-esc="cell.text"/>
+                                    </t>
+                                    <t t-elif="cell.badge">
+                                        <span t-att-class="'o_aiis_dash_badge ' + cell.badge" t-esc="cell.text"/>
+                                    </t>
+                                    <t t-else=""><t t-esc="cell.text"/></t>
+                                    <div t-if="cell.sub" class="o_aiis_dash_cell_sub" t-esc="cell.sub"/>
+                                </td>
+                            </t>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </div>
+    </t>
+
+    <t t-name="aiis_dashboard.Notes">
+        <div t-if="!block.items.length" class="text-muted small mt-2" t-esc="block.empty"/>
+        <t t-foreach="block.items" t-as="item" t-key="item_index">
+            <div class="o_aiis_dash_note">
+                <div class="d-flex flex-wrap gap-2 align-items-baseline">
+                    <a t-if="item.ref.open" href="#" class="fw-bold" t-on-click.prevent="() => this.open(item.ref)" t-esc="item.ref.text"/>
+                    <span t-else="" class="fw-bold" t-esc="item.ref.text"/>
+                    <span class="text-muted small" t-esc="item.meta"/>
+                </div>
+                <div t-if="item.text">“<t t-esc="item.text"/>”</div>
+            </div>
+        </t>
+    </t>
+
+</templates>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form_aiis_procurement" model="ir.ui.view">
+        <field name="name">res.company.form.aiis.procurement</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Procurement" name="aiis_procurement" groups="base.group_system">
+                    <group>
+                        <field name="aiis_procurement_department_id"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

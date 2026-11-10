@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_aiis_finance_summary_list" model="ir.ui.view">
+        <field name="name">aiis.finance.summary.list</field>
+        <field name="model">aiis.finance.summary</field>
+        <field name="arch" type="xml">
+            <tree string="Profit Statement" create="false" edit="false" delete="false" decoration-bf="is_total">
+                <field name="type"/>
+                <field name="date"/>
+                <field name="analytic_account_id" string="Project"/>
+                <field name="department_id"/>
+                <field name="amount" sum="Amount"/>
+                <field name="is_total" column_invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aiis_finance_summary_pivot" model="ir.ui.view">
+        <field name="name">aiis.finance.summary.pivot</field>
+        <field name="model">aiis.finance.summary</field>
+        <field name="arch" type="xml">
+            <pivot string="Profit Statement" sample="1">
+                <field name="type" type="row"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_aiis_finance_summary_graph" model="ir.ui.view">
+        <field name="name">aiis.finance.summary.graph</field>
+        <field name="model">aiis.finance.summary</field>
+        <field name="arch" type="xml">
+            <graph string="Profit Statement" type="bar">
+                <field name="date" interval="month"/>
+                <field name="type"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_aiis_finance_summary_search" model="ir.ui.view">
+        <field name="name">aiis.finance.summary.search</field>
+        <field name="model">aiis.finance.summary</field>
+        <field name="arch" type="xml">
+            <search string="Profit Statement">
+                <field name="analytic_account_id" string="Project"/>
+                <field name="department_id"/>
+                <filter string="Payment Date" name="filter_period" date="date"/>
+                <separator/>
+                <filter string="Revenue" name="filter_income" domain="[('type','=','income')]"/>
+                <filter string="Cost" name="filter_cost" domain="[('type','=','cost')]"/>
+                <filter string="Expense" name="filter_expense" domain="[('type','=','expense')]"/>
+                <filter string="Profit" name="filter_profit" domain="[('type','=','profit')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" name="groupby_type" context="{'group_by':'type'}"/>
+                    <filter string="Project" name="groupby_analytic" context="{'group_by':'analytic_account_id'}"/>
+                    <filter string="Department" name="groupby_department" context="{'group_by':'department_id'}"/>
+                    <filter string="Month" name="groupby_month" context="{'group_by':'date:month'}"/>
+                    <filter string="Quarter" name="groupby_quarter" context="{'group_by':'date:quarter'}"/>
+                    <filter string="Year" name="groupby_year" context="{'group_by':'date:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_aiis_finance_overall" model="ir.actions.act_window">
+        <field name="name">Overall Profit</field>
+        <field name="res_model">aiis.finance.summary</field>
+        <field name="view_mode">pivot,list,graph</field>
+        <!-- IMPORTANT: this action's xmlid was reused from an earlier
+             version that pointed at aiis.finance.entry and had its own
+             search_view_id set. Updating a <record> only changes the
+             fields you list - fields left out keep whatever value they
+             already had. Without this explicit reset, the action kept
+             pointing at aiis.finance.entry's search view (with fields
+             like category_id/partner_id that don't exist on this model),
+             which crashed the frontend search-view parser on load. Same
+             reasoning applies to search_view_id/context below now that
+             the model has grown Project/Department/Period dimensions:
+             always set them explicitly on every version of this action. -->
+        <field name="search_view_id" ref="view_aiis_finance_summary_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No payments recorded yet
+            </p>
+            <p>
+                Revenue, Cost, Expense, and the last row - literally
+                labeled "Profit" - is Revenue + Cost + Expense (Cost and
+                Expense are already negative numbers, so it's a plain sum).
+                Based on <b>actual money received/paid</b>, not invoice/bill
+                posting date. Use the "+" on the pivot table to break this
+                down by Project or Department, and the date filter in the
+                search bar to look at a specific month/quarter/year. Go to
+                the Revenue / Cost / Expense menus to see the individual
+                transactions behind any of these numbers.
+            </p>
+        </field>
+    </record>
+
+</odoo>

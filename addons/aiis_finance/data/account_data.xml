@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- AIIS accounts (design doc 6.2, 6.7.3, 6.7.6): one per P&L detail
+         line, plus the balance sheet accounts the company needs. 7-digit
+         codes so they don't collide with the Saudi or generic chart.
+         noupdate: the CFO may rename or renumber them. -->
+    <data noupdate="1">
+        <record id="account_project_revenue" model="account.account">
+            <field name="code">4100000</field>
+            <field name="name">Project revenue</field>
+            <field name="account_type">income</field>
+            <field name="aiis_report_line">revenue</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_maintenance_revenue" model="account.account">
+            <field name="code">4200000</field>
+            <field name="name">Maintenance revenue</field>
+            <field name="account_type">income</field>
+            <field name="aiis_report_line">revenue</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_project_cost" model="account.account">
+            <field name="code">5100000</field>
+            <field name="name">Project materials and services</field>
+            <field name="account_type">expense_direct_cost</field>
+            <field name="aiis_report_line">cost_of_revenue</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_project_travel" model="account.account">
+            <field name="code">5200000</field>
+            <field name="name">Project delivery and maintenance travel</field>
+            <field name="account_type">expense_direct_cost</field>
+            <field name="aiis_report_line">cost_of_revenue</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_maintenance_cost" model="account.account">
+            <field name="code">5300000</field>
+            <field name="name">Maintenance parts and services</field>
+            <field name="account_type">expense_direct_cost</field>
+            <field name="aiis_report_line">cost_of_revenue</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_ga_personnel" model="account.account">
+            <field name="code">6110000</field>
+            <field name="name">G&amp;A - Personnel cost</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">ga_personnel</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_ga_rent" model="account.account">
+            <field name="code">6120000</field>
+            <field name="name">G&amp;A - Office rent and utilities</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">ga_rent</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_ga_professional" model="account.account">
+            <field name="code">6130000</field>
+            <field name="name">G&amp;A - Legal, audit and professional fees</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">ga_professional</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_ga_insurance" model="account.account">
+            <field name="code">6140000</field>
+            <field name="name">G&amp;A - Insurance, licenses and administration</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">ga_insurance</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_ga_it" model="account.account">
+            <field name="code">6150000</field>
+            <field name="name">G&amp;A - IT systems and subscriptions</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">ga_it</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_ga_travel" model="account.account">
+            <field name="code">6160000</field>
+            <field name="name">G&amp;A - Travel, training and recruitment</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">ga_travel</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_ga_depreciation" model="account.account">
+            <field name="code">6170000</field>
+            <field name="name">G&amp;A - Depreciation and amortization</field>
+            <field name="account_type">expense_depreciation</field>
+            <field name="aiis_report_line">ga_depreciation</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_ga_other" model="account.account">
+            <field name="code">6180000</field>
+            <field name="name">G&amp;A - Other administrative expenses</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">ga_other</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_rd_personnel" model="account.account">
+            <field name="code">6210000</field>
+            <field name="name">R&amp;D - Personnel cost</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">rd_personnel</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_rd_cloud" model="account.account">
+            <field name="code">6220000</field>
+            <field name="name">R&amp;D - Development cloud and compute</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">rd_cloud</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_rd_software" model="account.account">
+            <field name="code">6230000</field>
+            <field name="name">R&amp;D - Development software and tools</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">rd_software</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_rd_contractors" model="account.account">
+            <field name="code">6240000</field>
+            <field name="name">R&amp;D - Contractors and technical consulting</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">rd_contractors</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_rd_research" model="account.account">
+            <field name="code">6250000</field>
+            <field name="name">R&amp;D - Research, testing and prototypes</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">rd_research</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_rd_depreciation" model="account.account">
+            <field name="code">6260000</field>
+            <field name="name">R&amp;D - Depreciation and amortization</field>
+            <field name="account_type">expense_depreciation</field>
+            <field name="aiis_report_line">rd_depreciation</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_rd_other" model="account.account">
+            <field name="code">6270000</field>
+            <field name="name">R&amp;D - Other R&amp;D expenses</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">rd_other</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_sales_personnel" model="account.account">
+            <field name="code">6310000</field>
+            <field name="name">Sales - Personnel cost</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">sales_personnel</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_sales_marketing" model="account.account">
+            <field name="code">6320000</field>
+            <field name="name">Sales - Marketing and advertising</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">sales_marketing</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_sales_travel" model="account.account">
+            <field name="code">6330000</field>
+            <field name="name">Sales - Sales travel and entertainment</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">sales_travel</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_sales_events" model="account.account">
+            <field name="code">6340000</field>
+            <field name="name">Sales - Events, exhibitions and sponsorship</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">sales_events</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_sales_commissions" model="account.account">
+            <field name="code">6350000</field>
+            <field name="name">Sales - Commissions and channel incentives</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">sales_commissions</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_sales_crm" model="account.account">
+            <field name="code">6360000</field>
+            <field name="name">Sales - CRM and sales tools</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">sales_crm</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_sales_depreciation" model="account.account">
+            <field name="code">6370000</field>
+            <field name="name">Sales - Depreciation and amortization</field>
+            <field name="account_type">expense_depreciation</field>
+            <field name="aiis_report_line">sales_depreciation</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_sales_other" model="account.account">
+            <field name="code">6380000</field>
+            <field name="name">Sales - Other sales expenses</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">sales_other</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_other_income" model="account.account">
+            <field name="code">7100000</field>
+            <field name="name">Other income</field>
+            <field name="account_type">income_other</field>
+            <field name="aiis_report_line">other_income</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_finance_costs" model="account.account">
+            <field name="code">7200000</field>
+            <field name="name">Finance costs</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">finance_costs</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_zakat" model="account.account">
+            <field name="code">8100000</field>
+            <field name="name">Zakat</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">zakat</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_income_tax" model="account.account">
+            <field name="code">8200000</field>
+            <field name="name">Income tax</field>
+            <field name="account_type">expense</field>
+            <field name="aiis_report_line">income_tax</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_asset_computers" model="account.account">
+            <field name="code">1510000</field>
+            <field name="name">Computers and laptops</field>
+            <field name="account_type">asset_fixed</field>
+            <field name="aiis_report_line">fixed_assets</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_depreciation_computers" model="account.account">
+            <field name="code">1515000</field>
+            <field name="name">Accumulated depreciation - computers and laptops</field>
+            <field name="account_type">asset_fixed</field>
+            <field name="aiis_report_line">fixed_assets</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_asset_servers" model="account.account">
+            <field name="code">1520000</field>
+            <field name="name">Servers and network equipment</field>
+            <field name="account_type">asset_fixed</field>
+            <field name="aiis_report_line">fixed_assets</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_depreciation_servers" model="account.account">
+            <field name="code">1525000</field>
+            <field name="name">Accumulated depreciation - servers and network equipment</field>
+            <field name="account_type">asset_fixed</field>
+            <field name="aiis_report_line">fixed_assets</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_asset_furniture" model="account.account">
+            <field name="code">1530000</field>
+            <field name="name">Furniture</field>
+            <field name="account_type">asset_fixed</field>
+            <field name="aiis_report_line">fixed_assets</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_depreciation_furniture" model="account.account">
+            <field name="code">1535000</field>
+            <field name="name">Accumulated depreciation - furniture</field>
+            <field name="account_type">asset_fixed</field>
+            <field name="aiis_report_line">fixed_assets</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_payroll_payable" model="account.account">
+            <field name="code">2150000</field>
+            <field name="name">Salaries and employee payables</field>
+            <field name="account_type">liability_payable</field>
+            <field name="aiis_report_line">payroll_payable</field>
+            <field name="reconcile" eval="True"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_deferred_maintenance" model="account.account">
+            <field name="code">2160000</field>
+            <field name="name">Deferred maintenance revenue</field>
+            <field name="account_type">liability_current</field>
+            <field name="aiis_report_line">deferred_revenue</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_zakat_payable" model="account.account">
+            <field name="code">2170000</field>
+            <field name="name">Zakat payable</field>
+            <field name="account_type">liability_current</field>
+            <field name="aiis_report_line">zakat_payable</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_income_tax_payable" model="account.account">
+            <field name="code">2180000</field>
+            <field name="name">Income tax payable</field>
+            <field name="account_type">liability_current</field>
+            <field name="aiis_report_line">income_tax_payable</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_accrued" model="account.account">
+            <field name="code">2190000</field>
+            <field name="name">Accrued expenses</field>
+            <field name="account_type">liability_current</field>
+            <field name="aiis_report_line">accrued</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_eosb" model="account.account">
+            <field name="code">2510000</field>
+            <field name="name">End-of-service benefits provision</field>
+            <field name="account_type">liability_non_current</field>
+            <field name="aiis_report_line">eosb</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_share_capital" model="account.account">
+            <field name="code">3100000</field>
+            <field name="name">Share capital</field>
+            <field name="account_type">equity</field>
+            <field name="aiis_report_line">share_capital</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="account_retained_earnings" model="account.account">
+            <field name="code">3200000</field>
+            <field name="name">Retained earnings</field>
+            <field name="account_type">equity</field>
+            <field name="aiis_report_line">retained_earnings</field>
+            <field name="reconcile" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+    </data>
+</odoo>

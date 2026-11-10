@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The CFO sees costs and margin like Procurement does (Procurement,
+         CEO and Chairman already get them through the purchase user group) -->
+    <record id="group_project_cost" model="res.groups">
+        <field name="name">Projects: See Costs (CFO)</field>
+        <field name="category_id" ref="aiis_procurement_request.module_category_po_approval"/>
+    </record>
+
+    <!-- Design doc 4.7: a project is visible to the people involved in it -
+         salesperson, project manager, members, its approvers - while
+         Procurement, CFO, CEO and Chairman see all of them. -->
+    <record id="project_rule_participant" model="ir.rule">
+        <field name="name">Project: participants</field>
+        <field name="model_id" ref="model_aiis_project"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', '|', '|', ('salesperson_id', '=', user.id), ('project_manager_id', '=', user.id), ('member_ids', 'in', [user.id]), ('approval_user_ids', 'in', [user.id])]</field>
+    </record>
+
+    <record id="project_rule_all" model="ir.rule">
+        <field name="name">Project: procurement, CFO and administrators see all</field>
+        <field name="model_id" ref="model_aiis_project"/>
+        <field name="groups" eval="[(4, ref('purchase.group_purchase_user')), (4, ref('group_project_cost')), (4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="project_bom_line_rule_participant" model="ir.rule">
+        <field name="name">Project BOM line: participants</field>
+        <field name="model_id" ref="model_aiis_project_bom_line"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', '|', '|', ('project_id.salesperson_id', '=', user.id), ('project_id.project_manager_id', '=', user.id), ('project_id.member_ids', 'in', [user.id]), ('project_id.approval_user_ids', 'in', [user.id])]</field>
+    </record>
+
+    <record id="project_bom_line_rule_all" model="ir.rule">
+        <field name="name">Project BOM line: procurement, CFO and administrators see all</field>
+        <field name="model_id" ref="model_aiis_project_bom_line"/>
+        <field name="groups" eval="[(4, ref('purchase.group_purchase_user')), (4, ref('group_project_cost')), (4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="project_bom_version_rule_participant" model="ir.rule">
+        <field name="name">Project BOM version: participants</field>
+        <field name="model_id" ref="model_aiis_project_bom_version"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', '|', '|', ('project_id.salesperson_id', '=', user.id), ('project_id.project_manager_id', '=', user.id), ('project_id.member_ids', 'in', [user.id]), ('project_id.approval_user_ids', 'in', [user.id])]</field>
+    </record>
+
+    <record id="project_bom_version_rule_all" model="ir.rule">
+        <field name="name">Project BOM version: procurement, CFO and administrators see all</field>
+        <field name="model_id" ref="model_aiis_project_bom_version"/>
+        <field name="groups" eval="[(4, ref('purchase.group_purchase_user')), (4, ref('group_project_cost')), (4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="project_bom_version_line_rule_participant" model="ir.rule">
+        <field name="name">Project BOM version line: participants</field>
+        <field name="model_id" ref="model_aiis_project_bom_version_line"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', '|', '|', ('version_id.project_id.salesperson_id', '=', user.id), ('version_id.project_id.project_manager_id', '=', user.id), ('version_id.project_id.member_ids', 'in', [user.id]), ('version_id.project_id.approval_user_ids', 'in', [user.id])]</field>
+    </record>
+
+    <record id="project_bom_version_line_rule_all" model="ir.rule">
+        <field name="name">Project BOM version line: procurement, CFO and administrators see all</field>
+        <field name="model_id" ref="model_aiis_project_bom_version_line"/>
+        <field name="groups" eval="[(4, ref('purchase.group_purchase_user')), (4, ref('group_project_cost')), (4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Service hours: the engineer, their approvers and the project's
+         manager / salesperson / members -->
+    <record id="service_hours_rule_user" model="ir.rule">
+        <field name="name">Service hours: engineer, approvers, project team</field>
+        <field name="model_id" ref="model_aiis_service_hours_request"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', '|', '|', '|', ('employee_id.user_id', '=', user.id), ('approval_user_ids', 'in', [user.id]), ('project_id.project_manager_id', '=', user.id), ('project_id.salesperson_id', '=', user.id), ('project_id.member_ids', 'in', [user.id])]</field>
+    </record>
+
+    <record id="service_hours_rule_admin" model="ir.rule">
+        <field name="name">Service hours: administrators see all</field>
+        <field name="model_id" ref="model_aiis_service_hours_request"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="service_record_rule_user" model="ir.rule">
+        <field name="name">Service records: engineer, approvers, project team</field>
+        <field name="model_id" ref="model_aiis_service_record"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', '|', '|', '|', ('request_id.employee_id.user_id', '=', user.id), ('request_id.approval_user_ids', 'in', [user.id]), ('project_id.project_manager_id', '=', user.id), ('project_id.salesperson_id', '=', user.id), ('project_id.member_ids', 'in', [user.id])]</field>
+    </record>
+
+    <record id="service_record_rule_admin" model="ir.rule">
+        <field name="name">Service records: administrators see all</field>
+        <field name="model_id" ref="model_aiis_service_record"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Travel requests: the traveller, their approvers, the project manager,
+         and finance (expense managers) who pay the reimbursements -->
+    <record id="travel_request_rule_user" model="ir.rule">
+        <field name="name">Travel request: traveller, approvers, project manager</field>
+        <field name="model_id" ref="model_aiis_travel_request"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', '|', ('employee_id.user_id', '=', user.id), ('approval_user_ids', 'in', [user.id]), ('project_id.project_manager_id', '=', user.id)]</field>
+    </record>
+
+    <record id="travel_request_rule_all" model="ir.rule">
+        <field name="name">Travel request: expense managers and administrators see all</field>
+        <field name="model_id" ref="model_aiis_travel_request"/>
+        <field name="groups" eval="[(4, ref('hr_expense.group_hr_expense_manager')), (4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Approvers of a trip reimbursement may be above the employee's direct
+         manager: they can read it (approving goes through the engine) -->
+    <record id="expense_sheet_rule_approver" model="ir.rule">
+        <field name="name">Expense report: approval engine approvers read</field>
+        <field name="model_id" ref="hr_expense.model_hr_expense_sheet"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('approval_user_ids', 'in', [user.id])]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="expense_rule_approver" model="ir.rule">
+        <field name="name">Expense: approval engine approvers read</field>
+        <field name="model_id" ref="hr_expense.model_hr_expense"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('sheet_id.approval_user_ids', 'in', [user.id])]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Actual expenses listed on a travel request before the claim (#65):
+         whoever follows the request reads them; the department head may
+         also fill them in, through the request -->
+    <record id="expense_rule_travel_claim" model="ir.rule">
+        <field name="name">Expense: lines of a travel request claim</field>
+        <field name="model_id" ref="hr_expense.model_hr_expense"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('aiis_travel_request_id', '!=', False), '|', '|',
+            ('aiis_travel_request_id.approval_user_ids', 'in', [user.id]),
+            ('aiis_travel_request_id.project_id.project_manager_id', '=', user.id),
+            ('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+</odoo>

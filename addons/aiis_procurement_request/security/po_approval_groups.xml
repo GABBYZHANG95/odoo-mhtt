@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Access only: who APPROVES is the holder of the CEO / Chairman
+         position (Settings > Approvals > Positions, aiis_approval). Give the
+         holder this group too so they can open every PO / PR. -->
+    <record id="module_category_po_approval" model="ir.module.category">
+        <field name="name">Purchase Approval</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="group_po_approver_ceo" model="res.groups">
+        <field name="name">CEO</field>
+        <field name="category_id" ref="module_category_po_approval"/>
+        <field name="implied_ids" eval="[(4, ref('purchase.group_purchase_user'))]"/>
+    </record>
+
+    <record id="group_po_approver_chairman" model="res.groups">
+        <field name="name">Chairman</field>
+        <field name="category_id" ref="module_category_po_approval"/>
+        <field name="implied_ids" eval="[(4, ref('purchase.group_purchase_user'))]"/>
+    </record>
+
+    <!-- Kept up to date automatically: the purchase users of the company's
+         procurement department (every purchase user while none is set).
+         They turn approved requests into purchase orders (#48). -->
+    <record id="group_procurement_buyer" model="res.groups">
+        <field name="name">Procurement Department (Buyer)</field>
+        <field name="category_id" ref="module_category_po_approval"/>
+        <field name="comment">Set automatically from the procurement department in the company settings - do not tick by hand.</field>
+    </record>
+
+</odoo>

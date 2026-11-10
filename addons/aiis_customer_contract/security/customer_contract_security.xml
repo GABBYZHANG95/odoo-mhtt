@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Read access: everyone can see all contract requests (small team,
+         no need to hide this from each other) -->
+    <record id="customer_contract_rule_read_all" model="ir.rule">
+        <field name="name">Customer Contract: read all</field>
+        <field name="model_id" ref="model_customer_contract"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read">1</field>
+        <field name="perm_write">0</field>
+        <field name="perm_create">0</field>
+        <field name="perm_unlink">0</field>
+    </record>
+
+    <!-- Write/create: the salesperson themselves, their approver (manager),
+         or a Sales Manager (who converts approved requests into a SO) -->
+    <record id="customer_contract_rule_write_own" model="ir.rule">
+        <field name="name">Customer Contract: edit own / approver / sales manager</field>
+        <field name="model_id" ref="model_customer_contract"/>
+        <field name="domain_force">[(1, '=', 1)] if user.has_group('sales_team.group_sale_manager') else ['|', ('salesperson_id.user_id', '=', user.id), ('manager_id.user_id', '=', user.id)]</field>
+        <field name="perm_read">0</field>
+        <field name="perm_write">1</field>
+        <field name="perm_create">1</field>
+        <field name="perm_unlink">0</field>
+    </record>
+
+</odoo>

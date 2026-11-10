@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_aiis_sales_expense_root"
+              name="Sales Expenses"
+              parent="aiis_department_menu.menu_aiis_sales_root"
+              sequence="40"/>
+
+    <menuitem id="menu_aiis_sales_expense_request"
+              name="Requests"
+              parent="menu_aiis_sales_expense_root"
+              action="action_aiis_sales_expense_request"
+              sequence="10"/>
+
+    <menuitem id="menu_aiis_sales_budget"
+              name="Budgets"
+              parent="menu_aiis_sales_expense_root"
+              action="action_aiis_sales_budget"
+              groups="group_sales_budget_manager,base.group_system"
+              sequence="20"/>
+
+</odoo>

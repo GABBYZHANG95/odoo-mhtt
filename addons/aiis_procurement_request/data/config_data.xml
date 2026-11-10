@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Activate the currencies the company works with. USD and SAR are
+         active by default; CNY (Chinese yuan) is not. -->
+    <record id="base.CNY" model="res.currency">
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Company base/home currency: SAR. All other currencies (USD, CNY)
+         are just selectable working currencies on documents; everything
+         still gets converted back to SAR for accounting purposes using
+         the exchange rates in data/currency_rate_data.xml. -->
+    <function model="res.company" name="write">
+        <value model="res.company" eval="[ref('base.main_company')]"/>
+        <value eval="{'currency_id': ref('base.SAR')}"/>
+    </function>
+
+    <!--
+        PO approval is decided by the approval engine (template "Purchase
+        Order": every PO -> CEO, over 300,000 SAR -> CEO then Chairman),
+        which overrides Odoo's own double validation. Set the native setting to match - "every PO
+        needs approval" - so Settings > Purchase doesn't show a stale limit.
+    -->
+    <function model="res.company" name="write">
+        <value model="res.company" eval="[ref('base.main_company')]"/>
+        <value eval="{'po_double_validation': 'two_step', 'po_double_validation_amount': 0}"/>
+    </function>
+
+    <!-- RFQ / Purchase Order numbers: P00029 -> PO/2026/00030, in line with
+         PR/2026/. Existing orders keep their old numbers. -->
+    <function model="ir.sequence" name="write">
+        <value model="ir.sequence" eval="[ref('purchase.seq_purchase_order')]"/>
+        <value eval="{'prefix': 'PO/%(year)s/', 'padding': 5}"/>
+    </function>
+
+</odoo>

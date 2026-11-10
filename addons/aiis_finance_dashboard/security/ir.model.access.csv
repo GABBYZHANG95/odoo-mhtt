@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_aiis_finance_entry_account_user,aiis.finance.entry.account.user,model_aiis_finance_entry,account.group_account_invoice,1,0,0,0
+access_aiis_finance_entry_account_manager,aiis.finance.entry.account.manager,model_aiis_finance_entry,account.group_account_manager,1,0,0,0
+access_aiis_finance_summary_account_user,aiis.finance.summary.account.user,model_aiis_finance_summary,account.group_account_invoice,1,0,0,0
+access_aiis_finance_summary_account_manager,aiis.finance.summary.account.manager,model_aiis_finance_summary,account.group_account_manager,1,0,0,0

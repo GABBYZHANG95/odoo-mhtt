@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Natures (design doc 6.5): the Internal Expense tree lists what is
+         bought; the mapping says which account it goes to for each
+         department function (6.3, 6.4). noupdate: the CFO maintains both. -->
+    <data noupdate="1">
+    <record id="categ_nature_rent" model="product.category">
+        <field name="name">Office Rent and Utilities</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_rent_all" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_rent"/>
+        <field name="account_id" ref="account_ga_rent"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_professional" model="product.category">
+        <field name="name">Legal, Audit and Professional Fees</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_professional_all" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_professional"/>
+        <field name="account_id" ref="account_ga_professional"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_insurance" model="product.category">
+        <field name="name">Insurance, Licenses and Administration</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_insurance_all" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_insurance"/>
+        <field name="account_id" ref="account_ga_insurance"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_software" model="product.category">
+        <field name="name">Software and Subscriptions</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_software_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_software"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_it"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_software_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_software"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_software"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_software_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_software"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_crm"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_cloud" model="product.category">
+        <field name="name">Cloud and Compute</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_cloud_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_cloud"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_it"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_cloud_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_cloud"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_cloud"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_cloud_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_cloud"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_crm"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_contractors" model="product.category">
+        <field name="name">Contractors and Consulting</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_contractors_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_contractors"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_professional"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_contractors_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_contractors"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_contractors"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_contractors_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_contractors"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_research" model="product.category">
+        <field name="name">Research, Testing and Prototypes</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_research_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_research"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_research_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_research"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_research"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_research_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_research"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_marketing" model="product.category">
+        <field name="name">Marketing and Advertising</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_marketing_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_marketing"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_marketing_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_marketing"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_marketing_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_marketing"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_marketing"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_events" model="product.category">
+        <field name="name">Events, Exhibitions and Sponsorship</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_events_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_events"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_events_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_events"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_events_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_events"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_events"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_commissions" model="product.category">
+        <field name="name">Commissions and Channel Incentives</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_commissions_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_commissions"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_commissions_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_commissions"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_commissions_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_commissions"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_commissions"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_travel" model="product.category">
+        <field name="name">Travel, Training and Recruitment</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+    </record>
+    <record id="mapping_categ_nature_travel_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_travel"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_travel"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_travel_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_travel"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_categ_nature_travel_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_travel"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_travel"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="aiis_procurement_request.product_category_internal_it_equipment" model="product.category">
+        <field name="name">Computers and Laptops</field>
+        <field name="aiis_asset_account_id" ref="account_asset_computers"/>
+    </record>
+    <record id="mapping_product_category_internal_it_equipment_all" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_procurement_request.product_category_internal_it_equipment"/>
+        <field name="account_id" ref="account_ga_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_servers" model="product.category">
+        <field name="name">Servers and Network Equipment</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+        <field name="aiis_asset_account_id" ref="account_asset_servers"/>
+    </record>
+    <record id="mapping_categ_nature_servers_all" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_servers"/>
+        <field name="account_id" ref="account_ga_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="categ_nature_furniture" model="product.category">
+        <field name="name">Furniture</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+        <field name="aiis_asset_account_id" ref="account_asset_furniture"/>
+    </record>
+    <record id="mapping_categ_nature_furniture_all" model="aiis.account.mapping">
+        <field name="categ_id" ref="categ_nature_furniture"/>
+        <field name="account_id" ref="account_ga_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="aiis_procurement_request.product_category_internal_other_admin" model="product.category">
+        <field name="name">Other</field>
+    </record>
+    <record id="mapping_product_category_internal_other_admin_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_procurement_request.product_category_internal_other_admin"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_product_category_internal_other_admin_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_procurement_request.product_category_internal_other_admin"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_product_category_internal_other_admin_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_procurement_request.product_category_internal_other_admin"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_product_category_internal_expense_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_product_category_internal_expense_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_product_category_internal_expense_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_product_category_company_assets_all" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_finance_dashboard.product_category_company_assets"/>
+        <field name="account_id" ref="account_ga_other"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_product_category_it_software_ga" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_finance_dashboard.product_category_it_software"/>
+        <field name="function">ga</field>
+        <field name="account_id" ref="account_ga_it"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_product_category_it_software_rd" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_finance_dashboard.product_category_it_software"/>
+        <field name="function">rd</field>
+        <field name="account_id" ref="account_rd_software"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="mapping_product_category_it_software_sales" model="aiis.account.mapping">
+        <field name="categ_id" ref="aiis_finance_dashboard.product_category_it_software"/>
+        <field name="function">sales</field>
+        <field name="account_id" ref="account_sales_crm"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- Project purchases are Cost of revenue; what is sold on a project is project revenue -->
+    <record id="aiis_procurement_request.product_category_project_cost" model="product.category">
+        <field name="property_account_expense_categ_id" ref="account_project_cost"/>
+        <field name="property_account_income_categ_id" ref="account_project_revenue"/>
+    </record>
+    <record id="aiis_procurement_request.product_category_project_hardware" model="product.category">
+        <field name="property_account_expense_categ_id" ref="account_project_cost"/>
+        <field name="property_account_income_categ_id" ref="account_project_revenue"/>
+    </record>
+    <record id="aiis_procurement_request.product_category_project_cloud" model="product.category">
+        <field name="property_account_expense_categ_id" ref="account_project_cost"/>
+        <field name="property_account_income_categ_id" ref="account_project_revenue"/>
+    </record>
+    <record id="aiis_procurement_request.product_category_project_subcontracting" model="product.category">
+        <field name="property_account_expense_categ_id" ref="account_project_cost"/>
+        <field name="property_account_income_categ_id" ref="account_project_revenue"/>
+    </record>
+    <record id="aiis_finance_dashboard.product_category_resale_software" model="product.category">
+        <field name="property_account_expense_categ_id" ref="account_project_cost"/>
+        <field name="property_account_income_categ_id" ref="account_project_revenue"/>
+    </record>
+
+    <!-- Maintenance services sold to customers: deferred and recognised month by month -->
+    <record id="categ_maintenance_services" model="product.category">
+        <field name="name">Maintenance Services</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_project_cost"/>
+        <field name="property_account_expense_categ_id" ref="account_maintenance_cost"/>
+        <field name="property_account_income_categ_id" ref="account_maintenance_revenue"/>
+    </record>
+
+    <!-- Expense app products: travel ones are travel, the rest "other" -->
+    <record id="hr_expense.expense_product_meal_product_template" model="product.template">
+        <field name="categ_id" ref="categ_nature_travel"/>
+    </record>
+    <record id="hr_expense.expense_product_travel_accommodation_product_template" model="product.template">
+        <field name="categ_id" ref="categ_nature_travel"/>
+    </record>
+    <record id="hr_expense.expense_product_mileage_product_template" model="product.template">
+        <field name="categ_id" ref="categ_nature_travel"/>
+    </record>
+    <record id="hr_expense.expense_product_gift_product_template" model="product.template">
+        <field name="categ_id" ref="aiis_procurement_request.product_category_internal_other_admin"/>
+    </record>
+    <record id="hr_expense.expense_product_communication_product_template" model="product.template">
+        <field name="categ_id" ref="aiis_procurement_request.product_category_internal_other_admin"/>
+    </record>
+    </data>
+</odoo>

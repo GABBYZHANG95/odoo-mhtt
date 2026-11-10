@@ -1,0 +1,66 @@
+# MHTT production stack on its own cloud server (docs/deploy/正式上线计划.md).
+# deploy/.env (secrets) and deploy/odoo.conf (generated from
+# odoo.conf.template) stay on the server, never in git.
+#
+#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d
+#
+# Only Caddy is reachable from outside (80/443). Odoo and PostgreSQL publish
+# no ports: Docker-published ports bypass the host firewall.
+name: mhtt
+
+x-logging: &logging
+  driver: json-file
+  options: {max-size: "50m", max-file: "5"}
+
+services:
+  db:
+    image: postgres:16
+    container_name: mhtt-db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in deploy/.env}
+    volumes:
+      - mhtt-db:/var/lib/postgresql/data
+    restart: unless-stopped
+    logging: *logging
+
+  odoo:
+    image: odoo:17
+    container_name: mhtt-app
+    depends_on:
+      - db
+    environment:
+      # CA that signed MHTT's LDAP server certificate (StartTLS)
+      LDAPTLS_CACERT: /etc/odoo/certs/ldap-ca.pem
+    volumes:
+      - mhtt-web-data:/var/lib/odoo
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./certs:/etc/odoo/certs:ro
+      - ../addons:/mnt/extra-addons:ro
+    restart: unless-stopped
+    logging: *logging
+
+  caddy:
+    image: caddy:2
+    container_name: mhtt-caddy
+    depends_on:
+      - odoo
+    environment:
+      ODOO_DOMAIN: ${ODOO_DOMAIN:?set ODOO_DOMAIN in deploy/.env}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+    logging: *logging
+
+volumes:
+  mhtt-db:
+  mhtt-web-data:
+  caddy-data:
+  caddy-config:

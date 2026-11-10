@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_procurement_request_internal_user,procurement.request.internal.user,model_procurement_request,base.group_user,1,1,1,0
+access_procurement_request_line_internal_user,procurement.request.line.internal.user,model_procurement_request_line,base.group_user,1,1,1,1
+access_procurement_request_create_po_wizard,procurement.request.create.po.wizard,model_procurement_request_create_po_wizard,purchase.group_purchase_user,1,1,1,1
+access_product_template_purchase_user,product.template.purchase.user,product.model_product_template,purchase.group_purchase_user,1,1,1,0
+access_product_product_purchase_user,product.product.purchase.user,product.model_product_product,purchase.group_purchase_user,1,1,1,0
+access_product_supplierinfo_purchase_user,product.supplierinfo.purchase.user,product.model_product_supplierinfo,purchase.group_purchase_user,1,1,1,1
+access_aiis_purchase_bill_return,aiis.purchase.bill.return,model_aiis_purchase_bill_return,account.group_account_invoice,1,1,1,1
+access_payment_stage_purchase,payment.stage.purchase,model_aiis_purchase_payment_stage,purchase.group_purchase_user,1,0,0,0
+access_payment_stage_finance,payment.stage.finance,model_aiis_purchase_payment_stage,account.group_account_invoice,1,0,0,0
+access_payment_stage_buyer,payment.stage.buyer,model_aiis_purchase_payment_stage,group_procurement_buyer,1,1,1,1
+access_terms_feedback_cfo,terms.feedback.cfo,model_aiis_purchase_terms_feedback,account.group_account_invoice,1,1,1,1
+access_purchase_acceptance_buyer,purchase.acceptance.buyer,model_aiis_purchase_acceptance,group_procurement_buyer,1,1,1,1

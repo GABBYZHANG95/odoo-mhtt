@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Design doc 2.4 / 5: pre-approval up to the CEO; reimbursement up to
+         the CEO, then the CFO. Maintained in Settings > Approvals > Templates. -->
+    <data noupdate="1">
+        <record id="approval_template_sales_expense_request" model="aiis.approval.template">
+            <field name="name">Sales Expense Request</field>
+            <field name="model_id" ref="model_aiis_sales_expense_request"/>
+        </record>
+        <record id="approval_node_sales_expense_request" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_sales_expense_request"/>
+            <field name="node_type">hierarchy</field>
+            <field name="hierarchy_end">ceo</field>
+        </record>
+
+        <record id="approval_template_sales_expense_reimbursement" model="aiis.approval.template">
+            <field name="name">Sales Expense Reimbursement</field>
+            <field name="model_id" ref="hr_expense.model_hr_expense_sheet"/>
+            <field name="gate">sales</field>
+        </record>
+        <record id="approval_node_sales_expense_reimbursement_line" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_sales_expense_reimbursement"/>
+            <field name="sequence">10</field>
+            <field name="node_type">hierarchy</field>
+            <field name="hierarchy_end">ceo</field>
+        </record>
+        <record id="approval_node_sales_expense_reimbursement_cfo" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_sales_expense_reimbursement"/>
+            <field name="sequence">20</field>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_cfo"/>
+        </record>
+    </data>
+
+    <record id="seq_sales_expense_request" model="ir.sequence">
+        <field name="name">Sales Expense Request</field>
+        <field name="code">aiis.sales.expense.request</field>
+        <field name="prefix">SE/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="mail_activity_pay_expense" model="mail.activity.type">
+        <field name="name">Post and Pay Expenses</field>
+        <field name="icon">fa-money</field>
+        <field name="delay_count">0</field>
+        <field name="res_model">hr.expense.sheet</field>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_customer_contract"
+              name="Customer Contracts"
+              parent="aiis_department_menu.menu_aiis_sales_root"
+              action="action_customer_contract"
+              sequence="5"/>
+
+    <menuitem id="menu_customer_contract_to_approve"
+              name="Contracts To Approve"
+              parent="aiis_department_menu.menu_aiis_sales_root"
+              action="action_customer_contract_to_approve"
+              sequence="6"/>
+
+</odoo>

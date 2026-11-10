@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Profit & Loss, design doc 6.1, 6.2 and 6.8.3 (40 lines).
+         Generated from the report lines of account.account (aiis_report_line);
+         see models/account_account.py. -->
+    <record id="mis_report_profit_loss" model="mis.report">
+        <field name="name">MHTT Profit &amp; Loss</field>
+        <field name="description">Accrual basis - SAR - actual figures only</field>
+        <field name="style_id" ref="mis_style_base"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_revenue" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">10</field>
+        <field name="name">revenue</field>
+        <field name="description">Recognized revenue</field>
+        <field name="expression">-balp[('aiis_report_line', '=', 'revenue')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_cost_of_revenue" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">20</field>
+        <field name="name">cost_of_revenue</field>
+        <field name="description">Cost of revenue</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'cost_of_revenue')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_gross_profit" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">30</field>
+        <field name="name">gross_profit</field>
+        <field name="description">Gross profit</field>
+        <field name="expression">revenue - cost_of_revenue</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_total"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_ga" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">40</field>
+        <field name="name">ga</field>
+        <field name="description">General &amp; administrative</field>
+        <field name="expression">ga_personnel + ga_rent + ga_professional + ga_insurance + ga_it + ga_travel + ga_depreciation + ga_other</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_ga_personnel" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">50</field>
+        <field name="name">ga_personnel</field>
+        <field name="description">Personnel cost</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'ga_personnel')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_ga_rent" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">60</field>
+        <field name="name">ga_rent</field>
+        <field name="description">Office rent and utilities</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'ga_rent')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_ga_professional" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">70</field>
+        <field name="name">ga_professional</field>
+        <field name="description">Legal, audit and professional fees</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'ga_professional')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_ga_insurance" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">80</field>
+        <field name="name">ga_insurance</field>
+        <field name="description">Insurance, licenses and administration</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'ga_insurance')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_ga_it" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">90</field>
+        <field name="name">ga_it</field>
+        <field name="description">IT systems and subscriptions</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'ga_it')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_ga_travel" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">100</field>
+        <field name="name">ga_travel</field>
+        <field name="description">Travel, training and recruitment</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'ga_travel')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_ga_depreciation" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">110</field>
+        <field name="name">ga_depreciation</field>
+        <field name="description">Depreciation and amortization</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'ga_depreciation')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_ga_other" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">120</field>
+        <field name="name">ga_other</field>
+        <field name="description">Other administrative expenses</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'ga_other')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_rd" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">130</field>
+        <field name="name">rd</field>
+        <field name="description">Research &amp; development</field>
+        <field name="expression">rd_personnel + rd_cloud + rd_software + rd_contractors + rd_research + rd_depreciation + rd_other</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_rd_personnel" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">140</field>
+        <field name="name">rd_personnel</field>
+        <field name="description">Personnel cost</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'rd_personnel')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_rd_cloud" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">150</field>
+        <field name="name">rd_cloud</field>
+        <field name="description">Development cloud and compute</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'rd_cloud')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_rd_software" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">160</field>
+        <field name="name">rd_software</field>
+        <field name="description">Development software and tools</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'rd_software')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_rd_contractors" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">170</field>
+        <field name="name">rd_contractors</field>
+        <field name="description">Contractors and technical consulting</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'rd_contractors')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_rd_research" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">180</field>
+        <field name="name">rd_research</field>
+        <field name="description">Research, testing and prototypes</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'rd_research')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_rd_depreciation" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">190</field>
+        <field name="name">rd_depreciation</field>
+        <field name="description">Depreciation and amortization</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'rd_depreciation')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_rd_other" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">200</field>
+        <field name="name">rd_other</field>
+        <field name="description">Other R&amp;D expenses</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'rd_other')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_sales" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">210</field>
+        <field name="name">sales</field>
+        <field name="description">Sales</field>
+        <field name="expression">sales_personnel + sales_marketing + sales_travel + sales_events + sales_commissions + sales_crm + sales_depreciation + sales_other</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_sales_personnel" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">220</field>
+        <field name="name">sales_personnel</field>
+        <field name="description">Personnel cost</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'sales_personnel')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_sales_marketing" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">230</field>
+        <field name="name">sales_marketing</field>
+        <field name="description">Marketing and advertising</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'sales_marketing')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_sales_travel" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">240</field>
+        <field name="name">sales_travel</field>
+        <field name="description">Sales travel and entertainment</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'sales_travel')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_sales_events" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">250</field>
+        <field name="name">sales_events</field>
+        <field name="description">Events, exhibitions and sponsorship</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'sales_events')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_sales_commissions" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">260</field>
+        <field name="name">sales_commissions</field>
+        <field name="description">Commissions and channel incentives</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'sales_commissions')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_sales_crm" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">270</field>
+        <field name="name">sales_crm</field>
+        <field name="description">CRM and sales tools</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'sales_crm')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_sales_depreciation" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">280</field>
+        <field name="name">sales_depreciation</field>
+        <field name="description">Depreciation and amortization</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'sales_depreciation')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_sales_other" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">290</field>
+        <field name="name">sales_other</field>
+        <field name="description">Other sales expenses</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'sales_other')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_detail"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_total_opex" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">300</field>
+        <field name="name">total_opex</field>
+        <field name="description">Total operating expenses</field>
+        <field name="expression">ga + rd + sales</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_total"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_operating_profit" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">310</field>
+        <field name="name">operating_profit</field>
+        <field name="description">Operating profit</field>
+        <field name="expression">gross_profit - total_opex</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_total"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_other_income" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">320</field>
+        <field name="name">other_income</field>
+        <field name="description">Net other income</field>
+        <field name="expression">-balp[('aiis_report_line', '=', 'other_income')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_finance_costs" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">330</field>
+        <field name="name">finance_costs</field>
+        <field name="description">Finance costs</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'finance_costs')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_profit_before_tax" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">340</field>
+        <field name="name">profit_before_tax</field>
+        <field name="description">Profit before tax</field>
+        <field name="expression">operating_profit + other_income - finance_costs</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_total"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_zakat" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">350</field>
+        <field name="name">zakat</field>
+        <field name="description">Zakat</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'zakat')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_income_tax" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">360</field>
+        <field name="name">income_tax</field>
+        <field name="description">Income tax</field>
+        <field name="expression">balp[('aiis_report_line', '=', 'income_tax')]</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_category"/>
+        <field name="auto_expand_accounts" eval="True"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_net_profit" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">370</field>
+        <field name="name">net_profit</field>
+        <field name="description">Net profit</field>
+        <field name="expression">profit_before_tax - zakat - income_tax</field>
+        <field name="type">num</field>
+        <field name="compare_method">diff</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="mis_style_net"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_gross_margin" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">380</field>
+        <field name="name">gross_margin</field>
+        <field name="description">Gross margin</field>
+        <field name="expression">gross_profit / revenue if revenue else AccountingNone</field>
+        <field name="type">pct</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">none</field>
+        <field name="style_id" ref="mis_style_margin"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_operating_margin" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">390</field>
+        <field name="name">operating_margin</field>
+        <field name="description">Operating margin</field>
+        <field name="expression">operating_profit / revenue if revenue else AccountingNone</field>
+        <field name="type">pct</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">none</field>
+        <field name="style_id" ref="mis_style_margin"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+    <record id="mis_report_profit_loss_kpi_net_margin" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_profit_loss"/>
+        <field name="sequence">400</field>
+        <field name="name">net_margin</field>
+        <field name="description">Net profit margin</field>
+        <field name="expression">net_profit / revenue if revenue else AccountingNone</field>
+        <field name="type">pct</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">none</field>
+        <field name="style_id" ref="mis_style_margin"/>
+        <field name="auto_expand_accounts" eval="False"/>
+        <field name="auto_expand_accounts_style_id" ref="mis_style_account"/>
+    </record>
+</odoo>

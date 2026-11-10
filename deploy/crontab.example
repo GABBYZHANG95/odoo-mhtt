@@ -1,0 +1,6 @@
+# Nightly backup on MHTT's production server (plan section 8).
+# Install with: crontab -e   (as the user that owns the checkout, e.g. /opt/odoo)
+30 2 * * * cd /opt/odoo && KEEP_DAYS=14 scripts/backup.sh mhtt >> backups/backup.log 2>&1
+# Second copy off the server, over the VPN to MHTT's office (fill in
+# the target once the VPN is up; plan section 3):
+# 15 3 * * * rsync -a --delete /opt/odoo/backups/ backup@OFFICE_HOST:/srv/odoo-backups/mhtt/

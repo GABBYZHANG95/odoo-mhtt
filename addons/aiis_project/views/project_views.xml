@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_aiis_project_form" model="ir.ui.view">
+        <field name="name">aiis.project.form</field>
+        <field name="model">aiis.project</field>
+        <field name="arch" type="xml">
+            <form string="Project">
+                <header>
+                    <field name="state" invisible="1"/>
+                    <field name="status" invisible="1"/>
+                    <field name="approval_can_act" invisible="1"/>
+                    <field name="approval_can_withdraw" invisible="1"/>
+                    <field name="aiis_approval_state" invisible="1"/>
+                    <field name="can_set_margin" invisible="1"/>
+                    <field name="is_rd" invisible="1"/>
+                    <field name="is_salesperson" invisible="1"/>
+                    <field name="can_review_finance" invisible="1"/>
+                    <button name="action_submit_initiation" string="Submit Initiation" type="object" class="oe_highlight"
+                            invisible="state != 'draft' or status != 'active' or not is_salesperson"/>
+                    <button name="action_submit_solution" string="Submit Solution for Approval" type="object" class="oe_highlight"
+                            invisible="state != 'design' or status != 'active' or not is_rd"/>
+                    <button name="action_submit_costing" string="Submit Costing for Approval" type="object" class="oe_highlight"
+                            invisible="state != 'costing' or status != 'active'" groups="purchase.group_purchase_user"/>
+                    <button name="action_approval_approve" string="Approve" type="object" class="oe_highlight"
+                            invisible="not approval_can_act"/>
+                    <button name="action_approval_open_reject" string="Reject" type="object"
+                            invisible="not approval_can_act"/>
+                    <button name="action_approval_withdraw" string="Withdraw" type="object"
+                            invisible="not approval_can_withdraw" confirm="Withdraw this submission?"/>
+                    <button name="action_open_customer_accept" string="Customer Accepted" type="object" class="oe_highlight"
+                            invisible="state != 'quoted' or status != 'active' or not is_salesperson"/>
+                    <button name="action_open_customer_reject" string="Customer Rejected" type="object"
+                            invisible="state != 'quoted' or status != 'active' or not is_salesperson"/>
+                    <button name="action_confirm_bom" string="Confirm BOM" type="object" class="oe_highlight"
+                            invisible="state != 'contract_bom' or status != 'active' or not is_rd or contract_bom_confirmed_by"
+                            confirm="Confirm the BOM is current? Change any outdated lines first - changed lines are quoted again."/>
+                    <field name="contract_bom_confirmed_by" invisible="1"/>
+                    <field name="contract_prices_confirmed_by" invisible="1"/>
+                    <button name="action_confirm_prices" string="Confirm Prices" type="object" class="oe_highlight"
+                            invisible="state != 'contract_bom' or status != 'active' or contract_prices_confirmed_by"
+                            groups="purchase.group_purchase_user"
+                            confirm="Confirm the prices are current? Update any changed price first - expired and changed lines must be quoted again."/>
+                    <button name="action_submit_requote" string="Submit New Quotes" type="object" class="oe_highlight"
+                            invisible="state != 'contract_requote' or status != 'active'" groups="purchase.group_purchase_user"/>
+                    <button name="action_requote" string="Re-quote" type="object" class="oe_highlight"
+                            invisible="state != 'renegotiate' or status != 'active' or not is_salesperson"
+                            confirm="Ask the CEO for a new quotation at the new costs?"/>
+                    <button name="action_submit_contract" string="Submit Contract for Approval" type="object" class="oe_highlight"
+                            invisible="state != 'contract_terms' or status != 'active' or not is_salesperson"/>
+                    <field name="is_project_manager" invisible="1"/>
+                    <field name="is_ceo" invisible="1"/>
+                    <button name="action_open_pr_wizard" string="Create Purchase Request" type="object" class="oe_highlight"
+                            invisible="state not in ('delivery', 'delivery_review', 'maintenance') or status != 'active' or not is_project_manager"/>
+                    <button name="action_request_delivery_acceptance" string="Request Delivery Acceptance" type="object"
+                            invisible="state != 'delivery' or status != 'active' or not is_project_manager"
+                            confirm="Ask the CEO to accept the delivery?"/>
+                    <button name="action_request_closing" string="Request Closing" type="object"
+                            invisible="state != 'maintenance' or status != 'active' or not is_project_manager"
+                            confirm="Ask the CEO to close the project at the end of maintenance?"/>
+                    <button name="action_open_renew" string="Renew Maintenance" type="object"
+                            invisible="state != 'maintenance' or status != 'active' or not is_ceo"/>
+                    <button name="action_restart" string="Restart" type="object" class="oe_highlight"
+                            invisible="status != 'paused' or not is_salesperson" confirm="Restart the project from solution design?"/>
+                    <field name="stage" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_procurement_requests" type="object" class="oe_stat_button" icon="fa-shopping-cart"
+                                invisible="not procurement_request_count">
+                            <field name="procurement_request_count" widget="statinfo" string="Purchase Requests"/>
+                        </button>
+                        <button name="action_open_quotation" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not quotation_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Quotation</span>
+                                <field name="quotation_id" readonly="1" class="o_stat_value" options="{'no_open': True}"/>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Paused" bg_color="text-bg-warning" invisible="status != 'paused'"/>
+                    <widget name="web_ribbon" title="Closed" bg_color="text-bg-danger" invisible="status != 'closed'"/>
+                    <div class="oe_title">
+                        <div class="text-muted"><field name="code" readonly="1" placeholder="Project number - given when initiation is approved"/></div>
+                        <h1><field name="name" placeholder="Project name" readonly="state != 'draft'"/></h1>
+                    </div>
+                    <div class="alert alert-info" role="status" invisible="not workflow_hint">
+                        <i class="fa fa-info-circle me-1"/><field name="workflow_hint" nolabel="1" class="d-inline"/>
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="bom_changed_count == 0">
+                        <field name="bom_changed_count" class="fw-bold"/> BOM line(s) changed since the solution was approved.
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="state not in ('contract_terms', 'contract_review') or project_manager_id">
+                        No project manager yet - the CEO assigns one before approving the contract.
+                    </div>
+                    <div class="alert alert-secondary" role="alert" invisible="status != 'paused'">
+                        Paused until <field name="restart_date" readonly="1" class="fw-bold"/>: <field name="close_reason" readonly="1"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="customer_code"/>
+                            <field name="salesperson_id" widget="many2one_avatar_user" readonly="state != 'draft'"/>
+                            <field name="can_assign_manager" invisible="1"/>
+                            <field name="project_manager_id" widget="many2one_avatar_user" readonly="not can_assign_manager"
+                                   placeholder="Assigned by the CEO"/>
+                            <field name="member_ids" widget="many2many_avatar_user"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="expected_amount" readonly="state != 'draft'"/>
+                            <field name="expected_date" readonly="state != 'draft'"/>
+                            <field name="analytic_account_id" invisible="not analytic_account_id" groups="analytic.group_analytic_accounting"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="opportunity" placeholder="Opportunity: what the customer needs, scope, background" readonly="state != 'draft'"/>
+                    <group>
+                        <field name="info_attachment_ids" widget="many2many_binary" readonly="state != 'draft'"/>
+                    </group>
+                    <notebook>
+                        <page string="BOM" name="bom" invisible="state in ('draft', 'initiation')">
+                            <group>
+                                <field name="solution_attachment_ids" widget="many2many_binary"
+                                       readonly="not is_rd or state not in ('design', 'costing', 'quoted', 'contract_bom', 'contract_requote', 'renegotiate') or status != 'active' or (state == 'contract_bom' and contract_bom_confirmed_by)"/>
+                            </group>
+                            <field name="bom_line_ids" readonly="state in ('draft', 'initiation', 'design_review', 'costing_review', 'contract_terms', 'contract_review', 'delivery') or status != 'active'">
+                                <tree editable="bottom" decoration-warning="status in ('needs_rfq', 'changed')" decoration-danger="status == 'expired'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name" readonly="not parent.is_rd"/>
+                                    <field name="specification" readonly="not parent.is_rd"/>
+                                    <field name="quantity" readonly="not parent.is_rd"/>
+                                    <field name="uom_id" options="{'no_create': True}" readonly="not parent.is_rd"/>
+                                    <field name="product_id" optional="show" options="{'no_create': True}" readonly="not parent.is_rd"/>
+                                    <field name="vendor_id" optional="show"/>
+                                    <field name="unit_cost"/>
+                                    <field name="cost_currency_id" options="{'no_create': True}"/>
+                                    <field name="quote_valid_until"/>
+                                    <field name="company_currency_id" column_invisible="1"/>
+                                    <field name="line_cost" sum="Total"/>
+                                    <field name="qty_requested" optional="show"/>
+                                    <field name="qty_ordered" optional="show"/>
+                                    <field name="qty_received" optional="show"/>
+                                    <field name="qty_remaining" optional="show"/>
+                                    <field name="status" widget="badge"
+                                           decoration-warning="status in ('needs_rfq', 'changed')"
+                                           decoration-danger="status == 'expired'"
+                                           decoration-success="status == 'quoted'"/>
+                                </tree>
+                            </field>
+                            <p class="text-muted">R&amp;D maintains the items; Procurement enters vendor, unit cost and quote validity.
+                                Costs are visible to Procurement, CFO and CEO only.</p>
+                        </page>
+                        <page string="Costing" name="costing" groups="purchase.group_purchase_user,aiis_project.group_project_cost"
+                              invisible="state in ('draft', 'initiation')">
+                            <group>
+                                <group>
+                                    <field name="company_currency_id" invisible="1"/>
+                                    <field name="total_cost"/>
+                                    <field name="margin_percent" readonly="not can_set_margin"/>
+                                    <field name="quote_amount"/>
+                                </group>
+                                <group invisible="not quotation_id">
+                                    <field name="quoted_cost"/>
+                                    <field name="quotation_amount"/>
+                                    <field name="actual_margin" widget="float" digits="[16, 1]"/>
+                                </group>
+                            </group>
+                            <p class="text-muted">The CEO sets the margin while approving the costing. Gross margin: quotation = cost / (1 - margin).</p>
+                        </page>
+                        <page string="Finance" name="finance"
+                              invisible="state in ('draft', 'initiation', 'design', 'design_review', 'costing')">
+                            <div class="alert alert-info" role="alert" invisible="not can_review_finance">
+                                Confirm the cost budget, the quotation taxes and the exchange rates, then approve:
+                                the quotation goes to the salesperson after your approval. The payment terms are agreed
+                                with the customer at the contract stage.
+                            </div>
+                            <group>
+                                <group string="Quotation">
+                                    <field name="quote_tax_ids" widget="many2many_tags" readonly="not can_review_finance"
+                                           options="{'no_create': True}"/>
+                                </group>
+                                <group string="Cost Budget" groups="purchase.group_purchase_user,aiis_project.group_project_cost">
+                                    <field name="cost_budget" readonly="not can_review_finance"/>
+                                    <field name="budget_committed"/>
+                                    <field name="budget_pending"/>
+                                    <field name="budget_remaining" decoration-danger="budget_remaining &lt; 0"/>
+                                </group>
+                            </group>
+                            <group string="Exchange Rates" groups="purchase.group_purchase_user,aiis_project.group_project_cost">
+                                <field name="fx_rate_ids" nolabel="1" colspan="2" readonly="not can_review_finance">
+                                    <tree editable="bottom" create="0" delete="0">
+                                        <field name="currency_id" readonly="1"/>
+                                        <field name="rate"/>
+                                        <field name="company_currency_id" string="Per 1 unit, in"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <p class="text-muted">Quotations are in SAR; foreign-currency costs are converted at these rates.
+                                Project purchase orders over the cost budget are flagged to the approvers, not blocked.</p>
+                        </page>
+                        <page string="Contract" name="contract" invisible="stage not in ('contract', 'delivery', 'maintenance')">
+                            <group>
+                                <group>
+                                    <field name="customer_po_ref" readonly="1"/>
+                                    <field name="quotation_amount"/>
+                                    <field name="contract_approved" readonly="1"/>
+                                </group>
+                                <group string="Maintenance">
+                                    <field name="maintenance_start" readonly="state not in ('contract_terms', 'delivery') or not (is_salesperson or is_project_manager)"/>
+                                    <field name="maintenance_end" readonly="state not in ('contract_terms', 'delivery') or not (is_salesperson or is_project_manager)"
+                                           placeholder="Leave empty if there is no maintenance"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="commercial_terms" readonly="state != 'contract_terms' or not is_salesperson" placeholder="Scope, delivery time, warranty, penalties..."/>
+                                <field name="payment_cycle" readonly="state != 'contract_terms' or not is_salesperson" placeholder="e.g. 30% on signing, 60% on delivery, 10% on acceptance"/>
+                                <field name="payment_conditions" readonly="state != 'contract_terms' or not is_salesperson" placeholder="e.g. invoices due in 30 days, 5% retention for 12 months"/>
+                            </group>
+                        </page>
+                        <page string="Service Hours" name="service_hours" invisible="stage not in ('delivery', 'maintenance')">
+                            <field name="service_request_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="employee_id"/>
+                                    <field name="hours_approved"/>
+                                    <field name="hours_used"/>
+                                    <field name="hours_remaining"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Travel" name="travel" invisible="stage not in ('delivery', 'maintenance')">
+                            <field name="travel_request_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="employee_id"/>
+                                    <field name="destination"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="budget"/>
+                                    <field name="amount_claimed"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="BOM Versions" name="versions" invisible="state in ('draft', 'initiation')">
+                            <field name="bom_version_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="submit_date"/>
+                                    <field name="submitted_by_id" widget="many2one_avatar_user"/>
+                                    <field name="attachment_count"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state in ('approved', 'confirmed')"
+                                           decoration-danger="state == 'rejected'"
+                                           decoration-info="state == 'submitted'"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="state"/>
+                                        <field name="submit_date"/>
+                                        <field name="submitted_by_id"/>
+                                        <field name="attachment_ids" widget="many2many_binary"/>
+                                    </group>
+                                    <field name="line_ids">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="specification"/>
+                                            <field name="quantity"/>
+                                            <field name="uom_id"/>
+                                            <field name="product_id"/>
+                                        </tree>
+                                    </field>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Approvals" name="approvals">
+                            <field name="approval_progress_html" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_aiis_project_tree" model="ir.ui.view">
+        <field name="name">aiis.project.tree</field>
+        <field name="model">aiis.project</field>
+        <field name="arch" type="xml">
+            <tree string="Projects" decoration-muted="status == 'closed'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="salesperson_id" widget="many2one_avatar_user"/>
+                <field name="project_manager_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="stage" widget="badge"/>
+                <field name="state" optional="show"/>
+                <field name="status" widget="badge"
+                       decoration-warning="status == 'paused'" decoration-danger="status == 'closed'"/>
+                <field name="approval_pending_names" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aiis_project_search" model="ir.ui.view">
+        <field name="name">aiis.project.search</field>
+        <field name="model">aiis.project</field>
+        <field name="arch" type="xml">
+            <search string="Projects">
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]"/>
+                <field name="partner_id"/>
+                <field name="salesperson_id"/>
+                <filter string="My Projects" name="filter_mine"
+                        domain="['|', '|', ('salesperson_id', '=', uid), ('project_manager_id', '=', uid), ('member_ids', 'in', [uid])]"/>
+                <filter string="Waiting for My Approval" name="filter_my_approval" domain="[('is_my_approval', '=', True)]"/>
+                <separator/>
+                <filter string="In Progress" name="filter_active" domain="[('status', '=', 'active')]"/>
+                <filter string="Paused" name="filter_paused" domain="[('status', '=', 'paused')]"/>
+                <filter string="Closed" name="filter_closed" domain="[('status', '=', 'closed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Stage" name="groupby_stage" context="{'group_by': 'stage'}"/>
+                    <filter string="Customer" name="groupby_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Salesperson" name="groupby_salesperson" context="{'group_by': 'salesperson_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_aiis_project" model="ir.actions.act_window">
+        <field name="name">Projects</field>
+        <field name="res_model">aiis.project</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_aiis_project_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No projects yet</p>
+            <p>A salesperson starts a project with the customer, the opportunity and the project
+               information, and submits it for initiation.</p>
+        </field>
+    </record>
+
+</odoo>

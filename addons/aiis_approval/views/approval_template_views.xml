@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_aiis_approval_template_tree" model="ir.ui.view">
+        <field name="name">aiis.approval.template.tree</field>
+        <field name="model">aiis.approval.template</field>
+        <field name="arch" type="xml">
+            <tree string="Approval Templates">
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="gate"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aiis_approval_template_form" model="ir.ui.view">
+        <field name="name">aiis.approval.template.form</field>
+        <field name="model">aiis.approval.template</field>
+        <field name="arch" type="xml">
+            <form string="Approval Template">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Purchase Order"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="model_id" options="{'no_create': True}"/>
+                            <field name="gate"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="node_ids">
+                        <tree editable="bottom">
+                            <field name="sequence"/>
+                            <field name="node_type"/>
+                            <field name="hierarchy_end" invisible="node_type != 'hierarchy'" required="node_type == 'hierarchy'"/>
+                            <field name="department_id" invisible="node_type != 'department_head'" required="node_type == 'department_head'"/>
+                            <field name="position_id" invisible="node_type != 'position'" required="node_type == 'position'"/>
+                            <field name="min_amount"/>
+                        </tree>
+                    </field>
+                    <p class="text-muted">
+                        Steps run in sequence order; steps with the same sequence number run in parallel and all
+                        must approve. Changes apply to documents submitted from now on.
+                    </p>
+                    <field name="note" placeholder="Notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_aiis_approval_template" model="ir.actions.act_window">
+        <field name="name">Approval Templates</field>
+        <field name="res_model">aiis.approval.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

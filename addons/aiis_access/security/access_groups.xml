@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kept up to date from the departments (#52) - do not tick by hand -->
+    <record id="group_sales_member" model="res.groups">
+        <field name="name">Sales Department (automatic)</field>
+        <field name="category_id" ref="aiis_procurement_request.module_category_po_approval"/>
+        <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+        <field name="comment">Employees of a Sales department: their own quotations, orders and contracts. Set from the employee's department.</field>
+    </record>
+    <record id="group_sales_head" model="res.groups">
+        <field name="name">Sales Department Head (automatic)</field>
+        <field name="category_id" ref="aiis_procurement_request.module_category_po_approval"/>
+        <field name="implied_ids" eval="[(4, ref('group_sales_member')), (4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
+        <field name="comment">Head of a Sales department: all quotations, orders and contracts of sales. Set from the department's manager.</field>
+    </record>
+</odoo>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_aiis_sales_expense_request_form" model="ir.ui.view">
+        <field name="name">aiis.sales.expense.request.form</field>
+        <field name="model">aiis.sales.expense.request</field>
+        <field name="arch" type="xml">
+            <form string="Sales Expense Request">
+                <header>
+                    <field name="approval_can_act" invisible="1"/>
+                    <field name="approval_can_withdraw" invisible="1"/>
+                    <field name="aiis_approval_state" invisible="1"/>
+                    <button name="action_submit" string="Submit for Approval" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approval_approve" string="Approve" type="object" class="oe_highlight"
+                            invisible="not approval_can_act"/>
+                    <button name="action_approval_open_reject" string="Reject" type="object" invisible="not approval_can_act"/>
+                    <button name="action_approval_withdraw" string="Withdraw" type="object" invisible="not approval_can_withdraw"/>
+                    <field name="claim_editable" invisible="1"/>
+                    <button name="action_submit_claim" string="Submit Claim" type="object" class="oe_highlight"
+                            invisible="not claim_editable"
+                            confirm="Submit the actual expenses and receipts for reimbursement? They cannot be changed afterwards unless the claim is returned."/>
+                    <field name="state" invisible="1"/>
+                    <field name="claim_stage" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="aiis_approval_state != 'pending'">
+                        Waiting for approval: <field name="approval_pending_names" class="fw-bold"/>
+                    </div>
+                    <field name="claim_over" invisible="1"/>
+                    <div class="alert alert-info" role="alert" invisible="claim_stage != 'approved' or claim_returned_reason">
+                        Once spent, list the actual expenses and attach the receipts under Actual Expenses, then click Submit Claim.
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="not claim_returned_reason">
+                        Claim returned - <field name="claim_returned_reason" class="d-inline"/>.
+                        Correct the expenses or receipts and click Submit Claim again.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="claim_stage != 'claimed'">
+                        Claim submitted<span invisible="not claim_pending_names">, waiting for approval: <field name="claim_pending_names" class="fw-bold"/></span>.
+                    </div>
+                    <div class="alert alert-success" role="alert" invisible="claim_stage != 'paid'">
+                        Claim paid.
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="not claim_over">
+                        The actual expenses (<field name="claim_total" class="d-inline"/>) are over the estimated amount.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="department_id"/>
+                            <field name="expense_type" widget="radio" readonly="state != 'draft'"/>
+                            <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="project_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'" invisible="expense_type != 'trip'"
+                                   required="expense_type == 'trip'"/>
+                            <field name="destination" readonly="state != 'draft'" invisible="expense_type != 'trip'"
+                                   required="expense_type == 'trip'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="amount" readonly="state != 'draft'"/>
+                            <field name="amount_reimbursed" invisible="state != 'approved'"/>
+                        </group>
+                    </group>
+                    <field name="purpose" placeholder="Purpose: which customer, what for" readonly="state != 'draft'"/>
+                    <field name="show_budget" invisible="1"/>
+                    <field name="budget_currency_id" invisible="1"/>
+                    <field name="budget_over" invisible="1"/>
+                    <group string="Department Budget" invisible="not show_budget">
+                        <div class="text-muted" colspan="2" invisible="budget_id">No budget set for this department and date.</div>
+                        <group invisible="not budget_id">
+                            <field name="budget_id"/>
+                            <field name="budget_amount"/>
+                            <field name="budget_used"/>
+                            <field name="budget_this"/>
+                            <field name="budget_remaining" decoration-danger="budget_over" decoration-bf="budget_over"/>
+                        </group>
+                        <div class="alert alert-danger" role="alert" colspan="2" invisible="not budget_over">
+                            Over budget once this is approved.
+                        </div>
+                    </group>
+                    <notebook>
+                        <page string="Actual Expenses" name="claim" invisible="state != 'approved'">
+                            <field name="claim_default_product_id" invisible="1"/>
+                            <field name="claim_line_ids" readonly="not claim_editable"
+                                   context="{'default_employee_id': employee_id, 'default_product_id': claim_default_product_id}">
+                                <tree editable="bottom">
+                                    <field name="date"/>
+                                    <field name="name" string="Description"/>
+                                    <field name="product_id" required="1" options="{'no_create': True, 'no_open': True}"
+                                           domain="[('can_be_expensed', '=', True), ('standard_price', '=', 0)]"/>
+                                    <field name="company_id" column_invisible="1"/>
+                                    <field name="employee_id" column_invisible="1"/>
+                                    <field name="state" column_invisible="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="company_currency_id" column_invisible="1"/>
+                                    <field name="product_has_cost" column_invisible="1"/>
+                                    <field name="total_amount_currency" string="Amount" sum="Total" readonly="product_has_cost"/>
+                                </tree>
+                            </field>
+                            <group>
+                                <group>
+                                    <field name="claim_total"/>
+                                    <field name="claim_receipt_ids" widget="many2many_binary" readonly="not claim_editable"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Expense Reports" name="expenses" invisible="state != 'approved'">
+                            <field name="expense_sheet_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="total_amount"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Approvals" name="approvals">
+                            <field name="approval_progress_html" nolabel="1"/>
+                            <field name="claim_approval_html" nolabel="1" invisible="not claim_approval_html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_aiis_sales_expense_request_tree" model="ir.ui.view">
+        <field name="name">aiis.sales.expense.request.tree</field>
+        <field name="model">aiis.sales.expense.request</field>
+        <field name="arch" type="xml">
+            <tree string="Sales Expense Requests">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id" optional="show"/>
+                <field name="expense_type"/>
+                <field name="partner_id"/>
+                <field name="date_from"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount" sum="Total"/>
+                <field name="amount_reimbursed" optional="show"/>
+                <field name="state" column_invisible="1"/>
+                <field name="claim_stage" widget="badge" decoration-success="claim_stage == 'paid'"
+                       decoration-info="claim_stage in ('submitted', 'claimed')" decoration-primary="claim_stage == 'approved'"/>
+                <field name="approval_pending_names" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aiis_sales_expense_request_search" model="ir.ui.view">
+        <field name="name">aiis.sales.expense.request.search</field>
+        <field name="model">aiis.sales.expense.request</field>
+        <field name="arch" type="xml">
+            <search string="Sales Expense Requests">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="partner_id"/>
+                <filter string="Mine" name="filter_mine" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter string="Waiting for My Approval" name="filter_my_approval" domain="[('is_my_approval', '=', True)]"/>
+                <separator/>
+                <filter string="Sales Trips" name="filter_trip" domain="[('expense_type', '=', 'trip')]"/>
+                <filter string="Client Entertainment" name="filter_entertainment" domain="[('expense_type', '=', 'entertainment')]"/>
+                <filter string="Gifts" name="filter_gift" domain="[('expense_type', '=', 'gift')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" name="groupby_type" context="{'group_by': 'expense_type'}"/>
+                    <filter string="Department" name="groupby_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Customer" name="groupby_partner" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_aiis_sales_expense_request" model="ir.actions.act_window">
+        <field name="name">Sales Expense Requests</field>
+        <field name="res_model">aiis.sales.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_aiis_sales_expense_request_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No sales expense requests yet</p>
+            <p>Sales trips, client entertainment and gifts are approved before spending; the actual costs are
+               claimed afterwards on the same request (Submit Claim).</p>
+        </field>
+    </record>
+
+</odoo>

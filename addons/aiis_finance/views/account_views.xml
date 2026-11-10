@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_list_aiis" model="ir.ui.view">
+        <field name="name">account.account.list.aiis</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_list"/>
+        <field name="arch" type="xml">
+            <field name="account_type" position="after">
+                <field name="aiis_report_line" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_account_form_aiis" model="ir.ui.view">
+        <field name="name">account.account.form.aiis</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+            <field name="account_type" position="after">
+                <field name="aiis_report_line"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_account_search_aiis" model="ir.ui.view">
+        <field name="name">account.account.search.aiis</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="no_report_line" string="No Report Line" domain="[('aiis_report_line', '=', False)]"/>
+                <filter name="group_report_line" string="Report Line" context="{'group_by': 'aiis_report_line'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_company_form_aiis_finance" model="ir.ui.view">
+        <field name="name">res.company.form.aiis.finance</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Finance" name="aiis_finance" groups="account.group_account_manager">
+                    <group>
+                        <field name="aiis_capitalization_threshold"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

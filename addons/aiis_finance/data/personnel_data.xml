@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Personnel cost types (design doc 6.6); HR can add more -->
+    <data noupdate="1">
+    <record id="personnel_type_salary" model="aiis.personnel.cost.type">
+        <field name="name">Salary</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="personnel_type_visa" model="aiis.personnel.cost.type">
+        <field name="name">Visa fee</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="personnel_type_iqama" model="aiis.personnel.cost.type">
+        <field name="name">Iqama fee</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="personnel_type_insurance" model="aiis.personnel.cost.type">
+        <field name="name">Medical insurance</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="personnel_type_gosi" model="aiis.personnel.cost.type">
+        <field name="name">Social insurance (GOSI)</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="personnel_type_eosb" model="aiis.personnel.cost.type">
+        <field name="name">End-of-service benefits</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="personnel_type_other" model="aiis.personnel.cost.type">
+        <field name="name">Other</field>
+        <field name="sequence">90</field>
+    </record>
+    </data>
+</odoo>

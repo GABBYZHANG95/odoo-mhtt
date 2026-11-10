@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_order_form_aiis_project" model="ir.ui.view">
+        <field name="name">sale.order.form.aiis.project</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="aiis_customer_contract.view_order_form_contract"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='partner_details']" position="inside">
+                <field name="aiis_project_id" invisible="not aiis_project_id"/>
+            </xpath>
+            <!-- Project orders are confirmed by the project contract gate -->
+            <xpath expr="//button[@name='action_request_contract']" position="attributes">
+                <attribute name="invisible">state not in ('draft', 'sent') or contract_id or aiis_project_id</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('alert')][.//field[@name='contract_state']]" position="attributes">
+                <attribute name="invisible">state not in ('draft', 'sent') or contract_ok or aiis_project_id</attribute>
+            </xpath>
+            <xpath expr="//header" position="after">
+                <div class="alert alert-info mb-0" role="alert"
+                     invisible="not aiis_project_id or state not in ('draft', 'sent') or contract_ok">
+                    This quotation belongs to a project: it is confirmed automatically once the project
+                    contract is approved.
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

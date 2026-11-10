@@ -1,0 +1,14 @@
+# HTTPS in front of Odoo; Caddy obtains and renews the certificate itself
+# (the domain must already point at this server's public IP).
+{$ODOO_DOMAIN} {
+	encode gzip
+	# Live notifications: Odoo's gevent port (workers > 0)
+	reverse_proxy /websocket* odoo:8072
+	reverse_proxy odoo:8069
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+}

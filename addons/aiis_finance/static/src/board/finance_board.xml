@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="aiis_finance.FinanceBoard">
+        <div class="o_action o_aiis_finance_board h-100 overflow-auto">
+            <div class="container-fluid py-3 px-4">
+                <div class="d-flex flex-wrap align-items-end gap-3 mb-3">
+                    <div class="me-auto">
+                        <h2 class="mb-0" t-esc="title"/>
+                        <div class="text-muted small">
+                            <t t-if="page === 'cash_flow'">Cash basis · bank-reconciled receipts and payments · SAR · actual figures only</t>
+                            <t t-else="">Accrual basis · SAR · actual figures only</t>
+                        </div>
+                    </div>
+                    <label class="o_aiis_filter">
+                        <span>Fiscal year</span>
+                        <input type="number" class="form-control form-control-sm" t-att-value="state.params.year"
+                               t-on-change="(ev) => this.onChange('year', ev)"/>
+                    </label>
+                    <label class="o_aiis_filter" t-if="page === 'overview'">
+                        <span>Period</span>
+                        <select class="form-select form-select-sm" t-on-change="(ev) => this.onChange('period', ev)">
+                            <t t-foreach="periods" t-as="period" t-key="period[0]">
+                                <option t-att-value="period[0]" t-att-selected="period[0] === state.params.period" t-esc="period[1]"/>
+                            </t>
+                        </select>
+                    </label>
+                    <label class="o_aiis_filter">
+                        <span>Cutoff date</span>
+                        <input type="date" class="form-control form-control-sm" t-att-value="state.params.cutoff"
+                               t-on-change="(ev) => this.onChange('cutoff', ev)"/>
+                    </label>
+                    <t t-if="page === 'overview'">
+                        <label class="o_aiis_filter">
+                            <span>Project</span>
+                            <select class="form-select form-select-sm" t-on-change="(ev) => this.onChange('project_id', ev)">
+                                <option value="">All projects</option>
+                                <t t-foreach="state.projects" t-as="project" t-key="project.id">
+                                    <option t-att-value="project.id" t-esc="project.display_name"/>
+                                </t>
+                            </select>
+                        </label>
+                        <label class="o_aiis_filter">
+                            <span>Customer</span>
+                            <select class="form-select form-select-sm" t-on-change="(ev) => this.onChange('partner_id', ev)">
+                                <option value="">All customers</option>
+                                <t t-foreach="state.partners" t-as="partner" t-key="partner.id">
+                                    <option t-att-value="partner.id" t-esc="partner.display_name"/>
+                                </t>
+                            </select>
+                        </label>
+                    </t>
+                </div>
+
+                <div t-if="state.loading and !state.data" class="text-muted">Loading…</div>
+                <t t-elif="state.data">
+                    <t t-if="page === 'overview'" t-call="aiis_finance.FinanceBoard.Overview"/>
+                    <t t-if="page === 'cash_flow'" t-call="aiis_finance.FinanceBoard.CashFlow"/>
+                    <t t-if="page === 'checks'" t-call="aiis_finance.FinanceBoard.Checks"/>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="aiis_finance.FinanceBoard.Overview">
+        <div class="text-muted small mb-2">
+            <t t-esc="state.data.date_from"/> – <t t-esc="state.data.date_to"/> · <t t-esc="state.data.currency"/>
+        </div>
+        <div class="row g-3 mb-4">
+            <t t-foreach="cards" t-as="card" t-key="card.key">
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="o_aiis_card h-100" role="button" t-on-click="() => this.drill(card.key)">
+                        <div class="o_aiis_card_label" t-esc="card.label"/>
+                        <div class="o_aiis_card_value" t-esc="format(card.value)"/>
+                        <div class="o_aiis_card_hint" t-esc="card.hint"/>
+                    </div>
+                </div>
+            </t>
+        </div>
+        <h5>By quarter</h5>
+        <div class="table-responsive">
+            <table class="table table-sm o_aiis_table">
+                <thead>
+                    <tr>
+                        <th/>
+                        <t t-foreach="state.data.quarters" t-as="q" t-key="q.label"><th class="text-end" t-esc="q.label"/></t>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="quarterRows" t-as="row" t-key="row.key">
+                        <td t-esc="row.label"/>
+                        <t t-foreach="state.data.quarters" t-as="q" t-key="q.label">
+                            <td class="text-end">
+                                <t t-if="!q.future">
+                                    <t t-if="row.pct" t-esc="formatPct(q[row.key])"/>
+                                    <a t-else="" href="#" t-on-click.prevent="() => this.drill(row.key, q_index + 1)" t-esc="format(q[row.key])"/>
+                                </t>
+                            </td>
+                        </t>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-muted small">Quarters after the cutoff stay empty: no forecast.</div>
+    </t>
+
+    <t t-name="aiis_finance.FinanceBoard.CashFlow">
+        <div class="table-responsive">
+            <table class="table table-sm o_aiis_table">
+                <thead>
+                    <tr>
+                        <th/>
+                        <t t-foreach="state.data.columns" t-as="c" t-key="c.label"><th class="text-end" t-esc="c.label"/></t>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="fw-bold">
+                        <td>Opening cash</td>
+                        <t t-foreach="state.data.columns" t-as="c" t-key="c.label">
+                            <td class="text-end"><t t-if="!c.future" t-esc="format(c.opening)"/></td>
+                        </t>
+                    </tr>
+                    <tr t-foreach="state.data.rows" t-as="row" t-key="row[0]">
+                        <td class="ps-4" t-esc="row[1]"/>
+                        <t t-foreach="state.data.columns" t-as="c" t-key="c.label">
+                            <td class="text-end"><t t-if="!c.future" t-esc="format(c[row[0]])"/></td>
+                        </t>
+                    </tr>
+                    <tr t-foreach="cashTotals" t-as="total" t-key="total.key" t-att-class="total.cls">
+                        <td t-esc="total.label"/>
+                        <t t-foreach="state.data.columns" t-as="c" t-key="c.label">
+                            <td class="text-end"><t t-if="!c.future" t-esc="format(c[total.key])"/></td>
+                        </t>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h5 class="mt-3">Customer receipts and project payments</h5>
+        <t t-set="chartData" t-value="chart"/>
+        <svg class="o_aiis_chart" t-att-viewBox="'0 0 ' + chartData.width + ' ' + chartData.height" role="img">
+            <t t-foreach="chartData.labels" t-as="label" t-key="label.label">
+                <text t-att-x="label.x" t-att-y="label.y" text-anchor="middle" t-esc="label.label"/>
+            </t>
+            <t t-foreach="chartData.series" t-as="serie" t-key="serie.key">
+                <polyline t-att-class="serie.cls" t-att-points="serie.points" fill="none"/>
+                <t t-foreach="serie.dots" t-as="dot" t-key="dot_index">
+                    <circle t-att-class="serie.cls" t-att-cx="dot.x" t-att-cy="dot.y" r="4"><title t-esc="dot.title"/></circle>
+                </t>
+            </t>
+        </svg>
+        <div class="d-flex gap-3 small">
+            <t t-foreach="chartData.series" t-as="serie" t-key="serie.key">
+                <span><span t-att-class="'o_aiis_swatch ' + serie.cls"/> <t t-esc="serie.label"/></span>
+            </t>
+        </div>
+        <div class="text-muted small mt-2">
+            Only receipts and payments matched with bank statement lines are classified; registering a payment is not
+            the bank paying it. Internal transfers cancel out. Closing cash equals the bank balance on the balance sheet.
+        </div>
+    </t>
+
+    <t t-name="aiis_finance.FinanceBoard.Checks">
+        <div class="text-muted small mb-2">At <t t-esc="state.data.cutoff"/> · differences should be 0 · for review only</div>
+        <div class="table-responsive">
+            <table class="table table-sm o_aiis_table">
+                <thead>
+                    <tr>
+                        <th>Check</th>
+                        <th class="text-end" colspan="2">Compared</th>
+                        <th class="text-end" colspan="2">With</th>
+                        <th class="text-end">Difference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="state.data.checks" t-as="check" t-key="check_index">
+                        <td t-esc="check.name"/>
+                        <td class="text-muted small text-end" t-esc="check.left_label"/>
+                        <td class="text-end" t-esc="format(check.left)"/>
+                        <td class="text-muted small text-end" t-esc="check.right_label"/>
+                        <td class="text-end"><t t-if="check.right_label" t-esc="format(check.right)"/></td>
+                        <td t-att-class="'text-end fw-bold ' + (check.ok ? 'text-success' : 'text-danger')" t-esc="format(check.diff)"/>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,18 @@
+// Brand colour: $aiis-brand is the company's primary colour (Settings >
+// Companies > Document Layout), written by models/res_company.py into
+// /_custom/aiis_theme/brand_variables.scss and loaded before this file.
+// Without it: MHTT navy, the colour of the logo.
+$aiis-brand: #233d7e !default;
+
+// Shades derived from the one colour, so a company only sets that one.
+$aiis-brand-light: lighten($aiis-brand, 8%);
+$aiis-brand-strong: darken($aiis-brand, 8%);
+$aiis-brand-dark: darken($aiis-brand, 15%);
+
+// Odoo derives buttons, links, active states and the navbar from these
+$o-community-color: $aiis-brand;
+$o-brand-odoo: $aiis-brand;
+$o-brand-primary: $aiis-brand;
+// Bootstrap primary of the login page and other frontend pages (otherwise
+// web_editor's purple palette): links, focus rings, form controls.
+$primary: $aiis-brand;

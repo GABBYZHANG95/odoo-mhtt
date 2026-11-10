@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sales app (design doc 1.4, #51): sales people, the CEO and the CFO -->
+    <record id="aiis_department_menu.menu_aiis_sales_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('sales_team.group_sale_salesman'),
+                                               ref('aiis_procurement_request.group_po_approver_ceo'),
+                                               ref('aiis_sales_expense.group_sales_budget_manager')])]"/>
+    </record>
+</odoo>

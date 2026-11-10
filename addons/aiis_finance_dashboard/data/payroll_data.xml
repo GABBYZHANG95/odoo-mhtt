@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Dedicated journal for monthly salary postings. Kept separate from
+         the Bank journal / vendor bills so payroll never gets mixed up
+         with real vendor payments - it's identified purely by its own
+         code (PAY), not by id/xmlid, so the Finance report's SQL view can
+         find it reliably across reinstalls. -->
+    <record id="journal_payroll" model="account.journal">
+        <field name="name">Payroll</field>
+        <field name="code">PAY</field>
+        <field name="type">general</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- Monthly catch-up: posts salary for every contract in state=open,
+         for any month from its start date through the current month that
+         hasn't been posted yet. Safe to run repeatedly - already-posted
+         months are skipped, so this can run once a month via cron and
+         also serves as the one-off recalculation trigger. -->
+    <record id="cron_run_monthly_payroll" model="ir.cron">
+        <field name="name">MHTT: Post Monthly Payroll</field>
+        <field name="model_id" ref="hr_contract.model_hr_contract"/>
+        <field name="state">code</field>
+        <field name="code">model._aiis_run_monthly_payroll()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+    </record>
+
+</odoo>

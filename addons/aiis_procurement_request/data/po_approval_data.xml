@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Default approval templates (design doc 2.4). noupdate: once
+         installed they are maintained in Settings > Approvals > Templates,
+         and upgrading the module doesn't undo those edits. -->
+    <data noupdate="1">
+
+        <!-- PR: every manager on the requester's reporting line, up to the
+             department head -->
+        <record id="approval_template_procurement_request" model="aiis.approval.template">
+            <field name="name">Procurement Request (internal)</field>
+            <field name="model_id" ref="model_procurement_request"/>
+        </record>
+        <record id="approval_node_procurement_request_hierarchy" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_procurement_request"/>
+            <field name="sequence">10</field>
+            <field name="node_type">hierarchy</field>
+            <field name="hierarchy_end">department_head</field>
+        </record>
+
+        <record id="approval_template_purchase_payment_terms" model="aiis.approval.template">
+            <field name="name">Purchase Supplier Terms Review</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="gate">payment_terms</field>
+        </record>
+        <record id="approval_node_purchase_payment_terms_cfo" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_purchase_payment_terms"/>
+            <field name="sequence">10</field>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_cfo"/>
+        </record>
+
+        <!-- PO: the CEO always; then the Chairman above 300,000 SAR -->
+        <record id="approval_template_purchase_order" model="aiis.approval.template">
+            <field name="name">Purchase Order</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+        </record>
+        <record id="approval_node_purchase_order_ceo" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_purchase_order"/>
+            <field name="sequence">10</field>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_ceo"/>
+        </record>
+        <record id="approval_node_purchase_order_chairman" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_purchase_order"/>
+            <field name="sequence">20</field>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_chairman"/>
+            <field name="min_amount">300000</field>
+        </record>
+
+    </data>
+
+</odoo>

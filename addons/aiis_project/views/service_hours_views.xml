@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_aiis_service_hours_request_form" model="ir.ui.view">
+        <field name="name">aiis.service.hours.request.form</field>
+        <field name="model">aiis.service.hours.request</field>
+        <field name="arch" type="xml">
+            <form string="Service Hours Request">
+                <header>
+                    <field name="approval_can_act" invisible="1"/>
+                    <field name="approval_can_withdraw" invisible="1"/>
+                    <field name="aiis_approval_state" invisible="1"/>
+                    <button name="action_submit" string="Submit for Approval" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approval_approve" string="Approve" type="object" class="oe_highlight"
+                            invisible="not approval_can_act"/>
+                    <button name="action_approval_open_reject" string="Reject" type="object" invisible="not approval_can_act"/>
+                    <button name="action_approval_withdraw" string="Withdraw" type="object" invisible="not approval_can_withdraw"/>
+                    <button name="action_new_extension" string="Request More Hours" type="object"
+                            invisible="state != 'approved' or extends_id"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="aiis_approval_state != 'pending'">
+                        Waiting for approval: <field name="approval_pending_names" class="fw-bold"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id" readonly="state != 'draft' or extends_id" options="{'no_create': True}"/>
+                            <field name="employee_id" readonly="state != 'draft' or extends_id"/>
+                            <field name="extends_id" invisible="not extends_id"/>
+                        </group>
+                        <group>
+                            <field name="hours" readonly="state != 'draft'"/>
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="What the service covers" readonly="state != 'draft'"/>
+                    <group invisible="extends_id">
+                        <group>
+                            <field name="hours_approved"/>
+                            <field name="hours_used"/>
+                            <field name="hours_remaining"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Service Records" name="records" invisible="extends_id">
+                            <field name="record_ids" readonly="state != 'approved'">
+                                <tree editable="bottom">
+                                    <field name="date"/>
+                                    <field name="hours" sum="Total"/>
+                                    <field name="description"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Extensions" name="extensions" invisible="extends_id or not extension_ids">
+                            <field name="extension_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="hours"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Approvals" name="approvals">
+                            <field name="approval_progress_html" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_aiis_service_hours_request_tree" model="ir.ui.view">
+        <field name="name">aiis.service.hours.request.tree</field>
+        <field name="model">aiis.service.hours.request</field>
+        <field name="arch" type="xml">
+            <tree string="Service Hours">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="employee_id"/>
+                <field name="extends_id" optional="show"/>
+                <field name="hours"/>
+                <field name="hours_remaining" optional="show"/>
+                <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-info="state == 'submitted'"/>
+                <field name="approval_pending_names" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aiis_service_hours_request_search" model="ir.ui.view">
+        <field name="name">aiis.service.hours.request.search</field>
+        <field name="model">aiis.service.hours.request</field>
+        <field name="arch" type="xml">
+            <search string="Service Hours">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="employee_id"/>
+                <filter string="Mine" name="filter_mine" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter string="Waiting for My Approval" name="filter_my_approval" domain="[('is_my_approval', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Project" name="groupby_project" context="{'group_by': 'project_id'}"/>
+                    <filter string="Engineer" name="groupby_employee" context="{'group_by': 'employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_aiis_service_hours_request" model="ir.actions.act_window">
+        <field name="name">Service Hours</field>
+        <field name="res_model">aiis.service.hours.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_aiis_service_hours_request_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No service hours requests yet</p>
+            <p>Service engineers request an hours budget on a project before working, then log their work on it.</p>
+        </field>
+    </record>
+
+</odoo>

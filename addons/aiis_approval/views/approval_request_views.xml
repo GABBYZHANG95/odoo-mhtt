@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- My Approvals: one line per approval waiting for me, any document type -->
+    <record id="view_aiis_approval_line_tree" model="ir.ui.view">
+        <field name="name">aiis.approval.line.tree</field>
+        <field name="model">aiis.approval.line</field>
+        <field name="arch" type="xml">
+            <tree string="Approvals" create="0" edit="0" delete="0"
+                  decoration-warning="state == 'pending'" decoration-muted="state in ('cancelled', 'reassigned')">
+                <field name="document_name"/>
+                <field name="model_name"/>
+                <field name="submitter_id" widget="many2one_avatar_user"/>
+                <field name="submit_date"/>
+                <field name="node_label"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'pending'"
+                       decoration-success="state in ('approved', 'auto')"
+                       decoration-danger="state == 'rejected'"/>
+                <field name="decision_date" optional="hide"/>
+                <button name="action_open_document" type="object" string="Open" icon="fa-external-link"/>
+                <button name="action_approve" type="object" string="Approve" icon="fa-check"
+                        class="text-success" invisible="state != 'pending' or request_state != 'pending'"/>
+                <button name="action_open_reject" type="object" string="Reject" icon="fa-times"
+                        class="text-danger" invisible="state != 'pending' or request_state != 'pending'"/>
+                <field name="request_state" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aiis_approval_line_form" model="ir.ui.view">
+        <field name="name">aiis.approval.line.form</field>
+        <field name="model">aiis.approval.line</field>
+        <field name="arch" type="xml">
+            <form string="Approval" create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_open_document" type="object" string="Open Document" class="oe_highlight"/>
+                    <button name="action_open_reassign" type="object" string="Reassign"
+                            groups="base.group_system" invisible="state not in ('waiting', 'pending')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="waiting,pending,approved"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="document_name"/>
+                            <field name="model_name"/>
+                            <field name="submitter_id"/>
+                            <field name="submit_date"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="node_label"/>
+                            <field name="step"/>
+                            <field name="decision_date"/>
+                            <field name="reassigned_to_id" invisible="not reassigned_to_id"/>
+                        </group>
+                    </group>
+                    <field name="comment" readonly="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_aiis_approval_line_search" model="ir.ui.view">
+        <field name="name">aiis.approval.line.search</field>
+        <field name="model">aiis.approval.line</field>
+        <field name="arch" type="xml">
+            <search string="Approvals">
+                <field name="document_name"/>
+                <field name="submitter_id"/>
+                <field name="user_id"/>
+                <filter string="Waiting for Me" name="filter_mine_pending"
+                        domain="[('user_id', '=', uid), ('state', '=', 'pending'), ('request_state', '=', 'pending')]"/>
+                <filter string="Decided by Me" name="filter_mine_decided"
+                        domain="[('user_id', '=', uid), ('state', 'in', ('approved', 'rejected'))]"/>
+                <filter string="Submitted by Me" name="filter_submitted" domain="[('submitter_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Open" name="filter_open" domain="[('state', 'in', ('waiting', 'pending'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Document Type" name="groupby_model" context="{'group_by': 'res_model'}"/>
+                    <filter string="Approver" name="groupby_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Status" name="groupby_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- My Approvals › Waiting for Me: only what waits for this user's
+         decision, as a fixed list (no filter to take off) -->
+    <record id="view_aiis_my_approval_search" model="ir.ui.view">
+        <field name="name">aiis.approval.line.search.mine</field>
+        <field name="model">aiis.approval.line</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <search string="Waiting for Me">
+                <field name="document_name"/>
+                <field name="submitter_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Document Type" name="groupby_model" context="{'group_by': 'res_model'}"/>
+                    <filter string="Submitted By" name="groupby_submitter" context="{'group_by': 'submitter_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_aiis_my_approvals" model="ir.actions.act_window">
+        <field name="name">Waiting for Me</field>
+        <field name="res_model">aiis.approval.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_aiis_my_approval_search"/>
+        <field name="domain">[('user_id', '=', uid), ('state', '=', 'pending'), ('request_state', '=', 'pending')]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing is waiting for your approval</p>
+        </field>
+    </record>
+
+    <!-- My Approvals › Returned to Me: what I submitted and got back
+         rejected, until I submit it again or cancel it (#56) -->
+    <record id="view_aiis_returned_request_tree" model="ir.ui.view">
+        <field name="name">aiis.approval.request.tree.returned</field>
+        <field name="model">aiis.approval.request</field>
+        <field name="arch" type="xml">
+            <tree string="Returned to Me" create="0" edit="0" delete="0" decoration-danger="1">
+                <field name="document_name"/>
+                <field name="model_name"/>
+                <field name="rejection_note"/>
+                <field name="rejection_reason"/>
+                <field name="submit_date" optional="hide"/>
+                <button name="action_open_document" type="object" string="Open" icon="fa-external-link"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aiis_returned_request_search" model="ir.ui.view">
+        <field name="name">aiis.approval.request.search.returned</field>
+        <field name="model">aiis.approval.request</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <search string="Returned to Me">
+                <field name="document_name"/>
+                <group expand="0" string="Group By">
+                    <filter string="Document Type" name="groupby_model" context="{'group_by': 'res_model'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_aiis_returned_to_me" model="ir.actions.act_window">
+        <field name="name">Returned to Me</field>
+        <field name="res_model">aiis.approval.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('view_aiis_returned_request_tree')})]"/>
+        <field name="search_view_id" ref="view_aiis_returned_request_search"/>
+        <field name="domain">[('submitter_id', '=', uid), ('returned', '=', True)]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing was returned to you</p>
+            <p>Documents you submitted and that were rejected show here until you submit them again.</p>
+        </field>
+    </record>
+
+    <!-- Administrators: every request, to follow up or reassign -->
+    <record id="view_aiis_approval_request_tree" model="ir.ui.view">
+        <field name="name">aiis.approval.request.tree</field>
+        <field name="model">aiis.approval.request</field>
+        <field name="arch" type="xml">
+            <tree string="Approval Requests" create="0" edit="0" delete="0">
+                <field name="document_name"/>
+                <field name="model_name"/>
+                <field name="submitter_id" widget="many2one_avatar_user"/>
+                <field name="submit_date"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'pending'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"/>
+                <field name="done_date" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aiis_approval_request_form" model="ir.ui.view">
+        <field name="name">aiis.approval.request.form</field>
+        <field name="model">aiis.approval.request</field>
+        <field name="arch" type="xml">
+            <form string="Approval Request" create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_open_document" type="object" string="Open Document" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="document_name"/>
+                            <field name="model_name"/>
+                            <field name="template_id"/>
+                            <field name="gate" invisible="not gate"/>
+                        </group>
+                        <group>
+                            <field name="submitter_id"/>
+                            <field name="submit_date"/>
+                            <field name="amount"/>
+                            <field name="done_date"/>
+                        </group>
+                    </group>
+                    <field name="line_ids">
+                        <tree>
+                            <field name="step"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="node_label"/>
+                            <field name="state" widget="badge"/>
+                            <field name="decision_date"/>
+                            <field name="comment"/>
+                            <button name="action_open_reassign" type="object" string="Reassign" icon="fa-user"
+                                    groups="base.group_system" invisible="state not in ('waiting', 'pending')"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_aiis_approval_request_search" model="ir.ui.view">
+        <field name="name">aiis.approval.request.search</field>
+        <field name="model">aiis.approval.request</field>
+        <field name="arch" type="xml">
+            <search string="Approval Requests">
+                <field name="document_name"/>
+                <field name="submitter_id"/>
+                <filter string="In Progress" name="filter_pending" domain="[('state', '=', 'pending')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Document Type" name="groupby_model" context="{'group_by': 'res_model'}"/>
+                    <filter string="Status" name="groupby_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_aiis_approval_request" model="ir.actions.act_window">
+        <field name="name">Approval Requests</field>
+        <field name="res_model">aiis.approval.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_aiis_approval_request_search"/>
+        <field name="context">{'search_default_filter_pending': 1}</field>
+    </record>
+
+</odoo>

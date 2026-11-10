@@ -1,0 +1,16 @@
+# Secrets - never commit (admin/master password, DB password)
+config/odoo.conf
+
+# Database / filestore backups
+backups/
+
+# Python
+__pycache__/
+*.pyc
+
+# docker compose secrets (DB password)
+.env
+
+# Production secrets (deploy/.env, generated deploy/odoo.conf)
+deploy/.env
+deploy/odoo.conf

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_aiis_project_root"
+              name="Projects"
+              sequence="16"
+              web_icon="aiis_project,static/description/icon.png"/>
+
+    <menuitem id="menu_aiis_project"
+              name="Projects"
+              parent="menu_aiis_project_root"
+              action="action_aiis_project"
+              sequence="10"/>
+
+    <menuitem id="menu_aiis_service_hours"
+              name="Service Hours"
+              parent="menu_aiis_project_root"
+              action="action_aiis_service_hours_request"
+              sequence="20"/>
+
+    <menuitem id="menu_aiis_travel_request"
+              name="Travel Requests"
+              parent="menu_aiis_project_root"
+              action="action_aiis_travel_request"
+              sequence="30"/>
+
+</odoo>

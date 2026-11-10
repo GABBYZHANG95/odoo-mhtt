@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_aiis_sales_budget_user,aiis.sales.budget.user,model_aiis_sales_budget,base.group_user,1,0,0,0
+access_aiis_sales_budget_manager,aiis.sales.budget.manager,model_aiis_sales_budget,group_sales_budget_manager,1,1,1,1
+access_aiis_sales_budget_admin,aiis.sales.budget.admin,model_aiis_sales_budget,base.group_system,1,1,1,1
+access_aiis_sales_expense_request_user,aiis.sales.expense.request.user,model_aiis_sales_expense_request,base.group_user,1,1,1,0
+access_aiis_sales_expense_request_admin,aiis.sales.expense.request.admin,model_aiis_sales_expense_request,base.group_system,1,1,1,1

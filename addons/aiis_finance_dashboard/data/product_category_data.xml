@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Cost (COGS) vs Expense (Opex) is decided purely by which account a
+        product category points to - Odoo's own account_type already
+        distinguishes them (expense_direct_cost = Cost, expense = Expense),
+        no custom logic needed. Expense is further broken down "by item
+        type" simply by grouping on the category itself (each category ->
+        its own dedicated account).
+
+        noupdate: categories are maintained by the team in the UI after
+        install (see aiis_procurement_request/data/product_category_data.xml,
+        which defines the Project Cost / Internal Expense tree these hang
+        under), so upgrading this module won't undo their edits.
+    -->
+    <data noupdate="1">
+
+    <!-- COST: things bought specifically to resell to a customer -->
+    <record id="product_category_resale_software" model="product.category">
+        <field name="name">Resale Software Licenses</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_project_cost"/>
+    </record>
+
+    <!-- EXPENSE categories, one per item type, each -> its own account -->
+    <record id="product_category_labor_cost" model="product.category">
+        <field name="name">Labor Cost</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+        <field name="property_account_expense_categ_id" ref="account_labor_cost"/>
+    </record>
+
+    <!-- Re-purpose the category previously used for "Company Assets" /
+         depreciation: same category, now a plain Expense bucket instead of
+         Fixed Asset - anything already tagged to it (e.g. office
+         furniture/equipment bought earlier) now correctly expenses. -->
+    <record id="product_category_company_assets" model="product.category">
+        <field name="name">Office Supplies</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+        <field name="property_account_expense_categ_id" ref="account_office_supplies"/>
+    </record>
+
+    <record id="product_category_it_software" model="product.category">
+        <field name="name">IT &amp; Software Services</field>
+        <field name="parent_id" ref="aiis_procurement_request.product_category_internal_expense"/>
+        <field name="property_account_expense_categ_id" ref="account_it_software"/>
+    </record>
+
+    <!-- The rest of the Project Cost / Internal Expense tree. Odoo doesn't
+         inherit accounts from a parent category, so each one - roots
+         included - gets its own. Cost of revenue and the catch-all
+         expense account depend on the chart of accounts (generic in the
+         test database, l10n_sa in production): set by the function at
+         the end. -->
+    <!-- Equipment counts as Office Supplies (expensed at once, no depreciation) -->
+    <record id="aiis_procurement_request.product_category_internal_it_equipment" model="product.category">
+        <field name="property_account_expense_categ_id" ref="account_office_supplies"/>
+    </record>
+
+    <!--
+        Employee reimbursements (Meals, Travel, Mileage, Gifts,
+        Communication, Others - the built-in Expense-app categories) are
+        products, not purchase categories, so they're routed directly by
+        setting their own expense account, overriding whatever category
+        they sit in. See data/hr_expense_data.xml.
+    -->
+
+    <function model="product.category" name="_aiis_set_default_accounts"/>
+
+    </data>
+
+</odoo>

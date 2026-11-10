@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_activity_procurement" model="mail.activity.type">
+        <field name="name">Prepare Purchase Order</field>
+        <field name="icon">fa-shopping-cart</field>
+        <field name="delay_count">0</field>
+        <field name="res_model">procurement.request</field>
+    </record>
+    <record id="mail_activity_pay_bill" model="mail.activity.type">
+        <field name="name">Confirm Bill and Pay</field>
+        <field name="icon">fa-money</field>
+        <field name="delay_count">0</field>
+        <field name="res_model">account.move</field>
+    </record>
+    <record id="mail_activity_receive_order" model="mail.activity.type">
+        <field name="name">Follow up Shipment and Receive</field>
+        <field name="icon">fa-truck</field>
+        <field name="delay_count">0</field>
+        <field name="res_model">purchase.order</field>
+    </record>
+    <record id="mail_activity_revise_order" model="mail.activity.type">
+        <field name="name">Revise Purchase Order</field>
+        <field name="icon">fa-undo</field>
+        <field name="delay_count">0</field>
+        <field name="res_model">purchase.order</field>
+    </record>
+    <record id="mail_activity_accept_order" model="mail.activity.type">
+        <field name="name">Confirm Purchase Acceptance</field>
+        <field name="icon">fa-check-square-o</field>
+        <field name="res_model">purchase.order</field>
+    </record>
+</odoo>

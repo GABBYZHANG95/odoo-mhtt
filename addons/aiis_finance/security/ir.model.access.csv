@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_mapping_user,aiis.account.mapping.user,model_aiis_account_mapping,base.group_user,1,0,0,0
+access_account_mapping_manager,aiis.account.mapping.manager,model_aiis_account_mapping,account.group_account_manager,1,1,1,1
+access_personnel_cost_type_hr,aiis.personnel.cost.type.hr,model_aiis_personnel_cost_type,hr.group_hr_user,1,1,1,1
+access_personnel_cost_type_board,aiis.personnel.cost.type.board,model_aiis_personnel_cost_type,group_finance_board,1,0,0,0
+access_personnel_cost_type_account,aiis.personnel.cost.type.account,model_aiis_personnel_cost_type,account.group_account_manager,1,0,0,0
+access_personnel_cost_hr,aiis.personnel.cost.hr,model_aiis_personnel_cost,hr.group_hr_user,1,1,1,1
+access_personnel_cost_board,aiis.personnel.cost.board,model_aiis_personnel_cost,group_finance_board,1,0,0,0
+access_personnel_cost_account,aiis.personnel.cost.account,model_aiis_personnel_cost,account.group_account_manager,1,0,0,0
+access_finance_report_wizard_board,aiis.finance.report.wizard.board,model_aiis_finance_report_wizard,group_finance_board,1,1,1,1
+access_mis_instance_board,mis.report.instance.board,mis_builder.model_mis_report_instance,group_finance_board,1,1,1,1
+access_mis_instance_period_board,mis.report.instance.period.board,mis_builder.model_mis_report_instance_period,group_finance_board,1,1,1,1
+access_crm_tag_board,crm.tag.finance.board,sales_team.model_crm_tag,group_finance_board,1,0,0,0

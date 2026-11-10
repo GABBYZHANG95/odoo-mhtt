@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_department_form_aiis_finance" model="ir.ui.view">
+        <field name="name">hr.department.form.aiis.finance</field>
+        <field name="model">hr.department</field>
+        <field name="inherit_id" ref="hr.view_department_form"/>
+        <field name="arch" type="xml">
+            <field name="parent_id" position="after">
+                <field name="aiis_function" placeholder="Same as parent (G&amp;A at the top)"/>
+                <field name="aiis_analytic_account_id" groups="account.group_account_readonly"/>
+            </field>
+        </field>
+    </record>
+</odoo>

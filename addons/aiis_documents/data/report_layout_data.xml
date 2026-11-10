@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+
+    <!-- Document layout for every printed report (SO, PO, invoices...).
+         Without a layout set, Odoo stops at the layout wizard the first time
+         someone prints. Install only: the primary colour is this database's
+         brand colour (aiis_theme) and is set per company afterwards
+         (scripts/setup_company_brand.py); upgrades must not reset it. -->
+    <function model="res.company" name="write">
+        <value model="res.company" eval="[ref('base.main_company')]"/>
+        <value eval="{
+            'external_report_layout_id': ref('web.external_layout_standard'),
+            'primary_color': '#233d7e',
+            'secondary_color': '#122042',
+        }"/>
+    </function>
+
+  </data>
+</odoo>

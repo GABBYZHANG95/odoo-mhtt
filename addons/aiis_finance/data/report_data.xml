@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The department dimension (design doc 6.7.3); projects have their own plan -->
+    <record id="analytic_plan_departments" model="account.analytic.plan">
+        <field name="name">Departments</field>
+    </record>
+
+    <!-- Receivables & Payables aging by due date (6.8.4): Not due, 1-30, 31-60, 61-90, 90+ -->
+    <data noupdate="1">
+    <record id="age_configuration" model="account.age.report.configuration">
+        <field name="name">MHTT (1-30, 31-60, 61-90, 90+)</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="line_ids" eval="[
+            (0, 0, {'name': '1-30', 'inferior_limit': 30}),
+            (0, 0, {'name': '31-60', 'inferior_limit': 60}),
+            (0, 0, {'name': '61-90', 'inferior_limit': 90}),
+            (0, 0, {'name': '90+', 'inferior_limit': 36500}),
+        ]"/>
+    </record>
+    </data>
+
+    <!-- MIS report styles: MHTT navy -->
+    <record id="mis_style_base" model="mis.report.style">
+        <field name="name">MHTT base</field>
+        <field name="dp_inherit" eval="False"/>
+        <field name="dp">0</field>
+        <field name="hide_empty_inherit" eval="False"/>
+        <field name="hide_empty" eval="False"/>
+    </record>
+    <record id="mis_style_category" model="mis.report.style">
+        <field name="name">MHTT category</field>
+        <field name="font_weight_inherit" eval="False"/>
+        <field name="font_weight">bold</field>
+        <field name="background_color_inherit" eval="False"/>
+        <field name="background_color">#E6EAF3</field>
+    </record>
+    <record id="mis_style_detail" model="mis.report.style">
+        <field name="name">MHTT detail</field>
+        <field name="indent_level_inherit" eval="False"/>
+        <field name="indent_level">1</field>
+    </record>
+    <record id="mis_style_account" model="mis.report.style">
+        <field name="name">MHTT account</field>
+        <field name="indent_level_inherit" eval="False"/>
+        <field name="indent_level">2</field>
+        <field name="font_size_inherit" eval="False"/>
+        <field name="font_size">small</field>
+        <field name="color_inherit" eval="False"/>
+        <field name="color">#5B6770</field>
+    </record>
+    <record id="mis_style_total" model="mis.report.style">
+        <field name="name">MHTT total</field>
+        <field name="font_weight_inherit" eval="False"/>
+        <field name="font_weight">bold</field>
+    </record>
+    <record id="mis_style_net" model="mis.report.style">
+        <field name="name">MHTT net</field>
+        <field name="font_weight_inherit" eval="False"/>
+        <field name="font_weight">bold</field>
+        <field name="background_color_inherit" eval="False"/>
+        <field name="background_color">#1B3066</field>
+        <field name="color_inherit" eval="False"/>
+        <field name="color">#FFFFFF</field>
+    </record>
+    <record id="mis_style_margin" model="mis.report.style">
+        <field name="name">MHTT margin</field>
+        <field name="font_style_inherit" eval="False"/>
+        <field name="font_style">italic</field>
+        <field name="dp_inherit" eval="False"/>
+        <field name="dp">1</field>
+    </record>
+</odoo>

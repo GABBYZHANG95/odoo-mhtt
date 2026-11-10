@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_aiis_finance_entry_list" model="ir.ui.view">
+        <field name="name">aiis.finance.entry.list</field>
+        <field name="model">aiis.finance.entry</field>
+        <field name="arch" type="xml">
+            <tree string="Company Cash Flow" default_order="date desc" create="false" edit="false" delete="false">
+                <field name="date" string="Payment Date"/>
+                <field name="entry_type"/>
+                <field name="category_id"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="analytic_account_id"/>
+                <field name="department_id"/>
+                <field name="amount" sum="Amount"/>
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aiis_finance_entry_pivot" model="ir.ui.view">
+        <field name="name">aiis.finance.entry.pivot</field>
+        <field name="model">aiis.finance.entry</field>
+        <field name="arch" type="xml">
+            <pivot string="Company Cash Flow" sample="1">
+                <field name="date" type="row" interval="month"/>
+                <field name="entry_type" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_aiis_finance_entry_graph" model="ir.ui.view">
+        <field name="name">aiis.finance.entry.graph</field>
+        <field name="model">aiis.finance.entry</field>
+        <field name="arch" type="xml">
+            <graph string="Company Cash Flow" type="bar">
+                <field name="date" interval="month"/>
+                <field name="entry_type"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_aiis_finance_entry_search" model="ir.ui.view">
+        <field name="name">aiis.finance.entry.search</field>
+        <field name="model">aiis.finance.entry</field>
+        <field name="arch" type="xml">
+            <search string="Company Cash Flow">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="category_id"/>
+                <field name="analytic_account_id"/>
+                <field name="department_id"/>
+                <filter string="Revenue" name="filter_income" domain="[('entry_type','=','income')]"/>
+                <filter string="Cost" name="filter_cost" domain="[('entry_type','=','cost')]"/>
+                <filter string="Expense" name="filter_expense" domain="[('entry_type','=','expense')]"/>
+                <separator/>
+                <filter string="Payment Date" name="filter_period" date="date"/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" name="groupby_type" context="{'group_by':'entry_type'}"/>
+                    <filter string="Category" name="groupby_category" context="{'group_by':'category_id'}"/>
+                    <filter string="Project / Analytic Account" name="groupby_analytic" context="{'group_by':'analytic_account_id'}"/>
+                    <filter string="Department" name="groupby_department" context="{'group_by':'department_id'}"/>
+                    <filter string="Partner" name="groupby_partner" context="{'group_by':'partner_id'}"/>
+                    <filter string="Day" name="groupby_day" context="{'group_by':'date:day'}"/>
+                    <filter string="Week" name="groupby_week" context="{'group_by':'date:week'}"/>
+                    <filter string="Month" name="groupby_month" context="{'group_by':'date:month'}"/>
+                    <filter string="Quarter" name="groupby_quarter" context="{'group_by':'date:quarter'}"/>
+                    <filter string="Year" name="groupby_year" context="{'group_by':'date:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Revenue only -->
+    <record id="action_aiis_finance_revenue" model="ir.actions.act_window">
+        <field name="name">Revenue</field>
+        <field name="res_model">aiis.finance.entry</field>
+        <field name="view_mode">list,graph,pivot</field>
+        <field name="search_view_id" ref="view_aiis_finance_entry_search"/>
+        <field name="domain">[('entry_type', '=', 'income')]</field>
+        <field name="context">{'graph_groupbys': ['date:month']}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No revenue recorded yet
+            </p>
+            <p>
+                Money actually received from customers (payment date, not
+                invoice date). Customer refunds are subtracted automatically.
+            </p>
+        </field>
+    </record>
+
+    <!-- Cost (COGS) only -->
+    <record id="action_aiis_finance_cost" model="ir.actions.act_window">
+        <field name="name">Cost</field>
+        <field name="res_model">aiis.finance.entry</field>
+        <field name="view_mode">list,graph,pivot</field>
+        <field name="search_view_id" ref="view_aiis_finance_entry_search"/>
+        <field name="domain">[('entry_type', '=', 'cost')]</field>
+        <field name="context">{'graph_groupbys': ['date:month']}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No cost recorded yet
+            </p>
+            <p>
+                Money paid for things bought specifically to resell to a
+                customer (e.g. resold software licenses) - tied to a deal,
+                not general company overhead. That's what "Expense" is for.
+            </p>
+        </field>
+    </record>
+
+    <!-- Expense broken down by item-type category -->
+    <record id="action_aiis_finance_expense" model="ir.actions.act_window">
+        <field name="name">Expense</field>
+        <field name="res_model">aiis.finance.entry</field>
+        <field name="view_mode">list,graph,pivot</field>
+        <field name="search_view_id" ref="view_aiis_finance_entry_search"/>
+        <field name="domain">[('entry_type', '=', 'expense')]</field>
+        <field name="context">{'search_default_groupby_category': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No expense recorded yet
+            </p>
+            <p>
+                Internal operating expenses, unrelated to any specific
+                deal, grouped by item-type category: Labor Cost, Office
+                Supplies, IT &amp; Software Services, Employee
+                Reimbursement, Other Administrative Expenses.
+            </p>
+        </field>
+    </record>
+
+</odoo>

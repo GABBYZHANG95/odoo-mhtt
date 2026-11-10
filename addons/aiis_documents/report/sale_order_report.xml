@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Reusable two-party signature block. Expects `left_title`,
+         `right_title` and optionally `right_signature` (image) to be set. -->
+    <template id="signature_block">
+        <div class="row mt-5" name="aiis_signatures" style="page-break-inside: avoid;">
+            <t t-foreach="[(left_title, False), (right_title, right_signature)]" t-as="party">
+                <div class="col-6">
+                    <div class="fw-bold mb-3" t-out="party[0]"/>
+                    <table class="table table-borderless table-sm" style="width: 95%;">
+                        <tr><td style="width: 32%;">Name:</td><td style="border-bottom: 1px solid #333;">&#160;</td></tr>
+                        <tr><td>Title:</td><td style="border-bottom: 1px solid #333;">&#160;</td></tr>
+                        <tr>
+                            <td style="height: 1.6cm; vertical-align: bottom;">Signature:</td>
+                            <td style="border-bottom: 1px solid #333; vertical-align: bottom;">
+                                <img t-if="party[1]" t-att-src="image_data_uri(party[1])" style="max-height: 1.4cm; max-width: 5cm;"/>
+                            </td>
+                        </tr>
+                        <tr><td>Date:</td><td style="border-bottom: 1px solid #333;">&#160;</td></tr>
+                    </table>
+                    <div class="text-muted small mt-2"
+                         style="border: 1px dashed #999; height: 2.6cm; width: 2.6cm; padding: 4px;">Company Stamp</div>
+                </div>
+            </t>
+        </div>
+    </template>
+
+    <template id="report_saleorder_document_aiis" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@name='informations_reference']/strong" position="replace">
+            <strong>Customer PO No.:</strong><br/>
+        </xpath>
+        <xpath expr="//div[@id='informations']" position="inside">
+            <div t-if="doc.contract_id" class="col-auto col-3 mw-100 mb-2" name="informations_contract">
+                <strong>Contract No.:</strong><br/>
+                <span class="m-0" t-field="doc.contract_id.name"/>
+            </div>
+            <div t-if="doc.contract_id.start_date" class="col-auto col-3 mw-100 mb-2" name="informations_service_period">
+                <strong>Service Period:</strong><br/>
+                <span class="m-0" t-field="doc.contract_id.start_date"/>
+                <t t-if="doc.contract_id.end_date"> – <span t-field="doc.contract_id.end_date"/></t>
+            </div>
+        </xpath>
+        <xpath expr="//span[@name='order_note']/.." position="after">
+            <t t-if="not (env.context.get('proforma') or is_pro_forma)">
+                <t t-set="left_title" t-value="'For and on behalf of %s' % doc.company_id.name"/>
+                <t t-set="right_title" t-value="'For and on behalf of %s' % doc.partner_id.commercial_partner_id.name"/>
+                <t t-set="right_signature" t-value="doc.signature"/>
+                <t t-call="aiis_documents.signature_block"/>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

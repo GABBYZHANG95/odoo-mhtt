@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_aiis_approval_position_user,aiis.approval.position.user,model_aiis_approval_position,base.group_user,1,0,0,0
+access_aiis_approval_position_admin,aiis.approval.position.admin,model_aiis_approval_position,base.group_system,1,1,1,1
+access_aiis_approval_template_user,aiis.approval.template.user,model_aiis_approval_template,base.group_user,1,0,0,0
+access_aiis_approval_template_admin,aiis.approval.template.admin,model_aiis_approval_template,base.group_system,1,1,1,1
+access_aiis_approval_template_node_user,aiis.approval.template.node.user,model_aiis_approval_template_node,base.group_user,1,0,0,0
+access_aiis_approval_template_node_admin,aiis.approval.template.node.admin,model_aiis_approval_template_node,base.group_system,1,1,1,1
+access_aiis_approval_request_user,aiis.approval.request.user,model_aiis_approval_request,base.group_user,1,0,0,0
+access_aiis_approval_line_user,aiis.approval.line.user,model_aiis_approval_line,base.group_user,1,0,0,0
+access_aiis_approval_reject_wizard_user,aiis.approval.reject.wizard.user,model_aiis_approval_reject_wizard,base.group_user,1,1,1,1
+access_aiis_approval_reassign_wizard_admin,aiis.approval.reassign.wizard.admin,model_aiis_approval_reassign_wizard,base.group_system,1,1,1,1
+access_aiis_todo_user,aiis.todo.user,model_aiis_todo,base.group_user,1,0,0,0

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Group rules are OR-ed together for a user in several groups, so a
+         purchase user (who is also an internal user) gets the
+         wider "all" rule below, while a plain employee only gets this one. -->
+
+    <!-- Plain employee: their own requests, their direct reports', and
+         any they are on the approver list of -->
+    <record id="procurement_request_rule_employee" model="ir.rule">
+        <field name="name">Procurement Request: own / reports' / approver</field>
+        <field name="model_id" ref="model_procurement_request"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', '|', ('employee_id.user_id', '=', user.id), ('manager_id.user_id', '=', user.id), ('approval_user_ids', 'in', [user.id])]</field>
+    </record>
+
+    <!-- Purchase team converts approved requests into POs, so they see
+         all. HR has no part in purchase approval. -->
+    <record id="procurement_request_rule_all" model="ir.rule">
+        <field name="name">Procurement Request: purchase team sees all</field>
+        <field name="model_id" ref="model_procurement_request"/>
+        <field name="groups" eval="[(6, 0, [ref('purchase.group_purchase_user')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Same split for the lines, so they can't be read around the header -->
+    <record id="procurement_request_line_rule_employee" model="ir.rule">
+        <field name="name">Procurement Request Line: own / reports' / approver</field>
+        <field name="model_id" ref="model_procurement_request_line"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', '|', ('request_id.employee_id.user_id', '=', user.id), ('request_id.manager_id.user_id', '=', user.id), ('request_id.approval_user_ids', 'in', [user.id])]</field>
+    </record>
+
+    <record id="procurement_request_line_rule_all" model="ir.rule">
+        <field name="name">Procurement Request Line: purchase team sees all</field>
+        <field name="model_id" ref="model_procurement_request_line"/>
+        <field name="groups" eval="[(6, 0, [ref('purchase.group_purchase_user')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="payment_stage_company_rule" model="ir.rule">
+        <field name="name">Payment stages: company</field>
+        <field name="model_id" ref="model_aiis_purchase_payment_stage"/>
+        <field name="domain_force">[('order_id.company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

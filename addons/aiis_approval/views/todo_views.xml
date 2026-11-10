@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_aiis_todo_tree" model="ir.ui.view">
+        <field name="name">aiis.todo.tree</field>
+        <field name="model">aiis.todo</field>
+        <field name="arch" type="xml">
+            <tree string="To do" create="0" edit="0" delete="0" js_class="aiis_todo_list">
+                <field name="kind" widget="badge"/>
+                <field name="document_name"/>
+                <field name="model_name"/>
+                <field name="submitter_id" widget="many2one_avatar_user"/>
+                <field name="amount" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="assigned_on"/>
+                <field name="deadline" optional="hide"/>
+                <field name="note" optional="hide"/>
+                <button name="action_open_document" type="object" string="Open" icon="fa-external-link"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_aiis_todo_search" model="ir.ui.view">
+        <field name="name">aiis.todo.search</field>
+        <field name="model">aiis.todo</field>
+        <field name="arch" type="xml">
+            <search string="To do">
+                <field name="document_name"/>
+                <field name="kind"/>
+                <filter name="approvals" string="To Approve" domain="[('kind', '=', 'approval')]"/>
+                <filter name="processing" string="To Process" domain="[('kind', 'not in', ['approval', 'returned', 'purchase_revision'])]"/>
+                <filter name="revisions" string="To Revise" domain="[('kind', 'in', ['returned', 'purchase_revision'])]"/>
+                <separator/>
+                <filter name="overdue" string="Overdue" domain="[('deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="by_kind" string="Task" context="{'group_by': 'kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_aiis_todo" model="ir.actions.act_window">
+        <field name="name">To do</field>
+        <field name="res_model">aiis.todo</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_aiis_todo_tree"/>
+        <field name="search_view_id" ref="view_aiis_todo_search"/>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">You have no pending tasks</p>
+            <p>Approvals, documents to revise and assigned business tasks appear here when it is your turn.</p>
+        </field>
+    </record>
+</odoo>

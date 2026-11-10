@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- #61: project purchase orders over the CFO's cost budget are flagged, not blocked -->
+    <record id="purchase_order_form_aiis_project_budget" model="ir.ui.view">
+        <field name="name">purchase.order.form.aiis.project.budget</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-danger mb-0" role="alert" invisible="not aiis_budget_warning"
+                     groups="purchase.group_purchase_user,aiis_project.group_project_cost">
+                    <i class="fa fa-exclamation-triangle"/> <field name="aiis_budget_warning" readonly="1" class="d-inline"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,26 @@
+# Translation of AIIS Department Menu.
+msgid ""
+msgstr ""
+"Project-Id-Version: aiis_department_menu\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh_CN\n"
+
+#. module: aiis_department_menu
+#: model:ir.ui.menu,name:aiis_department_menu.menu_aiis_hr_root
+msgid "Human Resources"
+msgstr "人力资源"
+
+#. module: aiis_department_menu
+#: model:ir.ui.menu,name:aiis_department_menu.menu_aiis_finance_root
+msgid "Finance"
+msgstr "财务"
+
+#. module: aiis_department_menu
+#: model:ir.ui.menu,name:aiis_department_menu.menu_aiis_purchase_root
+msgid "Procurement"
+msgstr "采购"
+
+#. module: aiis_department_menu
+#: model:ir.ui.menu,name:contacts.menu_contacts
+msgid "Clients"
+msgstr "客户"

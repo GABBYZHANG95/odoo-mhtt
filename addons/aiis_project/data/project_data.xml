@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+
+        <!-- Each project gets an analytic account in this plan, to collect
+             its costs and revenue -->
+        <record id="analytic_plan_projects" model="account.analytic.plan">
+            <field name="name">Projects</field>
+        </record>
+
+        <!-- Approval templates for the project gates (design doc 2.4).
+             Maintained in Settings > Approvals > Templates after install. -->
+        <record id="approval_template_project_initiation" model="aiis.approval.template">
+            <field name="name">Project Initiation</field>
+            <field name="model_id" ref="model_aiis_project"/>
+            <field name="gate">initiation</field>
+        </record>
+        <record id="approval_node_project_initiation" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_project_initiation"/>
+            <field name="node_type">hierarchy</field>
+            <field name="hierarchy_end">ceo</field>
+        </record>
+
+        <record id="approval_template_project_solution" model="aiis.approval.template">
+            <field name="name">Project Solution</field>
+            <field name="model_id" ref="model_aiis_project"/>
+            <field name="gate">solution</field>
+        </record>
+        <record id="approval_node_project_solution" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_project_solution"/>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_ceo"/>
+        </record>
+
+        <record id="approval_template_project_costing" model="aiis.approval.template">
+            <field name="name">Project Costing</field>
+            <field name="model_id" ref="model_aiis_project"/>
+            <field name="gate">costing</field>
+        </record>
+        <record id="approval_node_project_costing" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_project_costing"/>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_ceo"/>
+        </record>
+        <!-- #61: after the CEO's margin, the CFO confirms the payment terms,
+             cost budget, taxes and exchange rates before the quotation -->
+        <record id="approval_node_project_costing_cfo" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_project_costing"/>
+            <field name="sequence">20</field>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_cfo"/>
+        </record>
+
+        <!-- Contract (#63): the CFO (price, commercial terms, payment cycle and
+             conditions), then the CEO. R&D confirmed the BOM in the contract check. -->
+        <record id="approval_template_project_contract" model="aiis.approval.template">
+            <field name="name">Project Contract</field>
+            <field name="model_id" ref="model_aiis_project"/>
+            <field name="gate">contract</field>
+        </record>
+        <record id="approval_node_project_contract_cfo" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_project_contract"/>
+            <field name="sequence">10</field>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_cfo"/>
+        </record>
+        <record id="approval_node_project_contract_ceo" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_project_contract"/>
+            <field name="sequence">20</field>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_ceo"/>
+        </record>
+
+        <!-- Delivery acceptance and closing: the CEO -->
+        <record id="approval_template_project_delivery" model="aiis.approval.template">
+            <field name="name">Project Delivery Acceptance</field>
+            <field name="model_id" ref="model_aiis_project"/>
+            <field name="gate">delivery</field>
+        </record>
+        <record id="approval_node_project_delivery" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_project_delivery"/>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_ceo"/>
+        </record>
+        <record id="approval_template_project_closing" model="aiis.approval.template">
+            <field name="name">Project Closing</field>
+            <field name="model_id" ref="model_aiis_project"/>
+            <field name="gate">closing</field>
+        </record>
+        <record id="approval_node_project_closing" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_project_closing"/>
+            <field name="node_type">position</field>
+            <field name="position_id" ref="aiis_approval.position_ceo"/>
+        </record>
+
+        <!-- Project purchase requests: no approval, straight to Procurement -->
+        <record id="approval_template_project_pr" model="aiis.approval.template">
+            <field name="name">Project Purchase Request (no approval)</field>
+            <field name="model_id" ref="aiis_procurement_request.model_procurement_request"/>
+            <field name="gate">project</field>
+        </record>
+
+        <!-- Service hours: reporting line up to the department head -->
+        <record id="approval_template_service_hours" model="aiis.approval.template">
+            <field name="name">Service Hours Request</field>
+            <field name="model_id" ref="model_aiis_service_hours_request"/>
+        </record>
+        <record id="approval_node_service_hours" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_service_hours"/>
+            <field name="node_type">hierarchy</field>
+            <field name="hierarchy_end">department_head</field>
+        </record>
+
+        <!-- Travel request and its reimbursement: reporting line up to the CEO -->
+        <record id="approval_template_travel_request" model="aiis.approval.template">
+            <field name="name">Travel Request</field>
+            <field name="model_id" ref="model_aiis_travel_request"/>
+        </record>
+        <record id="approval_node_travel_request" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_travel_request"/>
+            <field name="node_type">hierarchy</field>
+            <field name="hierarchy_end">ceo</field>
+        </record>
+        <record id="approval_template_travel_expense" model="aiis.approval.template">
+            <field name="name">Trip Reimbursement</field>
+            <field name="model_id" ref="hr_expense.model_hr_expense_sheet"/>
+            <field name="gate">travel</field>
+        </record>
+        <record id="approval_node_travel_expense" model="aiis.approval.template.node">
+            <field name="template_id" ref="approval_template_travel_expense"/>
+            <field name="node_type">hierarchy</field>
+            <field name="hierarchy_end">ceo</field>
+        </record>
+
+    </data>
+
+    <record id="seq_service_hours_request" model="ir.sequence">
+        <field name="name">Service Hours Request</field>
+        <field name="code">aiis.service.hours.request</field>
+        <field name="prefix">SH/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_travel_request" model="ir.sequence">
+        <field name="name">Travel Request</field>
+        <field name="code">aiis.travel.request</field>
+        <field name="prefix">TR/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+</odoo>

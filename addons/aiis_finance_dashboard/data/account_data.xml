@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The catch-all "Other Administrative Expenses" account is found or
+         added by product.category._aiis_set_default_accounts (it depends
+         on the chart of accounts), see data/product_category_data.xml. -->
+
+    <!-- Dedicated Expense accounts, one per item-type category, so the
+         Finance report can group by account = by category "for free". -->
+    <record id="account_labor_cost" model="account.account">
+        <field name="name">Labor Cost</field>
+        <field name="code">601000</field>
+        <field name="account_type">expense</field>
+        <field name="reconcile" eval="False"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="account_office_supplies" model="account.account">
+        <field name="name">Office Supplies</field>
+        <field name="code">602000</field>
+        <field name="account_type">expense</field>
+        <field name="reconcile" eval="False"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="account_it_software" model="account.account">
+        <field name="name">IT &amp; Software Services</field>
+        <field name="code">603000</field>
+        <field name="account_type">expense</field>
+        <field name="reconcile" eval="False"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="account_employee_reimbursement" model="account.account">
+        <field name="name">Employee Reimbursement</field>
+        <field name="code">604000</field>
+        <field name="account_type">expense</field>
+        <field name="reconcile" eval="False"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+</odoo>

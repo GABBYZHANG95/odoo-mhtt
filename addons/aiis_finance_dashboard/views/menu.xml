@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_aiis_finance_revenue"
+              name="Revenue"
+              parent="aiis_department_menu.menu_aiis_finance_root"
+              action="action_aiis_finance_revenue"
+              sequence="20"/>
+
+    <menuitem id="menu_aiis_finance_cost"
+              name="Cost"
+              parent="aiis_department_menu.menu_aiis_finance_root"
+              action="action_aiis_finance_cost"
+              sequence="30"/>
+
+    <menuitem id="menu_aiis_finance_expense"
+              name="Expense"
+              parent="aiis_department_menu.menu_aiis_finance_root"
+              action="action_aiis_finance_expense"
+              sequence="40"/>
+
+    <menuitem id="menu_aiis_finance_overall"
+              name="Overall Profit"
+              parent="aiis_department_menu.menu_aiis_finance_root"
+              action="action_aiis_finance_overall"
+              sequence="50"/>
+
+</odoo>

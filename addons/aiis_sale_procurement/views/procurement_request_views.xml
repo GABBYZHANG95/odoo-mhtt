@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_procurement_request_form_sale" model="ir.ui.view">
+        <field name="name">procurement.request.form.sale</field>
+        <field name="model">procurement.request</field>
+        <field name="inherit_id" ref="aiis_procurement_request.view_procurement_request_form"/>
+        <field name="arch" type="xml">
+            <field name="analytic_account_id" position="after">
+                <field name="sale_order_id" invisible="not sale_order_id" groups="sales_team.group_sale_salesman"/>
+                <field name="sale_order_ref" invisible="not sale_order_ref" groups="!sales_team.group_sale_salesman"/>
+                <field name="customer_id" invisible="not customer_id"/>
+                <field name="customer_contract_id" invisible="not customer_contract_id" groups="sales_team.group_sale_salesman"/>
+                <field name="customer_contract_ref" invisible="not customer_contract_ref" groups="!sales_team.group_sale_salesman"/>
+            </field>
+            <xpath expr="//field[@name='line_ids']/tree/field[@name='product_id']" position="before">
+                <field name="sale_line_id" column_invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_procurement_request_tree_sale" model="ir.ui.view">
+        <field name="name">procurement.request.tree.sale</field>
+        <field name="model">procurement.request</field>
+        <field name="inherit_id" ref="aiis_procurement_request.view_procurement_request_tree"/>
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field name="sale_order_ref" optional="show"/>
+                <field name="customer_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_procurement_request_search_sale" model="ir.ui.view">
+        <field name="name">procurement.request.search.sale</field>
+        <field name="model">procurement.request</field>
+        <field name="inherit_id" ref="aiis_procurement_request.view_procurement_request_search"/>
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field name="sale_order_ref"/>
+                <field name="customer_id"/>
+            </field>
+            <filter name="filter_rejected" position="after">
+                <separator/>
+                <filter string="For a Sales Order" name="filter_for_so" domain="[('sale_order_id','!=',False)]"/>
+                <filter string="Internal Use" name="filter_internal" domain="[('sale_order_id','=',False)]"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

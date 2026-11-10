@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_expense_sheet_form_aiis_sales" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.aiis.sales</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="aiis_project.view_hr_expense_sheet_form_aiis_travel"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_approve_expense_sheets']" position="attributes">
+                <attribute name="invisible">not can_approve or state != 'submit' or aiis_travel_request_id or aiis_sales_request_id</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_refuse_expense_sheets']" position="attributes">
+                <attribute name="invisible">state not in ('submit', 'approve') or aiis_travel_request_id or aiis_sales_request_id</attribute>
+            </xpath>
+            <xpath expr="//field[@name='aiis_travel_request_id']" position="after">
+                <field name="aiis_sales_request_id" readonly="state != 'draft'" options="{'no_create': True}"
+                       invisible="aiis_travel_request_id"/>
+            </xpath>
+            <xpath expr="//field[@name='aiis_travel_request_id']" position="attributes">
+                <attribute name="invisible">aiis_sales_request_id</attribute>
+            </xpath>
+            <xpath expr="//page[@name='aiis_approvals']" position="attributes">
+                <attribute name="invisible">not aiis_travel_request_id and not aiis_sales_request_id</attribute>
+            </xpath>
+            <xpath expr="//page[@name='aiis_approvals']" position="before">
+                <page string="Department Budget" name="aiis_budget" invisible="not aiis_sales_request_id or not show_budget">
+                    <field name="show_budget" invisible="1"/>
+                    <field name="budget_currency_id" invisible="1"/>
+                    <field name="budget_over" invisible="1"/>
+                    <div class="text-muted" invisible="budget_id">No budget set for this department and date.</div>
+                    <group invisible="not budget_id">
+                        <group>
+                            <field name="budget_id"/>
+                            <field name="budget_amount"/>
+                            <field name="budget_used"/>
+                            <field name="budget_this"/>
+                            <field name="budget_remaining" decoration-danger="budget_over" decoration-bf="budget_over"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-danger" role="alert" invisible="not budget_over">
+                        Over budget once this is approved.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

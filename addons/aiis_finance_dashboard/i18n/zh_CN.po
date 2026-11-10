@@ -1,0 +1,132 @@
+# Translation of AIIS Finance Dashboard.
+msgid ""
+msgstr ""
+"Project-Id-Version: aiis_finance_dashboard\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh_CN\n"
+
+#. module: aiis_finance_dashboard
+#: model:ir.ui.menu,name:aiis_finance_dashboard.menu_aiis_finance_revenue
+#: model:ir.actions.act_window,name:aiis_finance_dashboard.action_aiis_finance_revenue
+msgid "Revenue"
+msgstr "收入"
+
+#. module: aiis_finance_dashboard
+#: model:ir.ui.menu,name:aiis_finance_dashboard.menu_aiis_finance_cost
+#: model:ir.actions.act_window,name:aiis_finance_dashboard.action_aiis_finance_cost
+msgid "Cost"
+msgstr "成本"
+
+#. module: aiis_finance_dashboard
+#: model:ir.ui.menu,name:aiis_finance_dashboard.menu_aiis_finance_expense
+#: model:ir.actions.act_window,name:aiis_finance_dashboard.action_aiis_finance_expense
+msgid "Expense"
+msgstr "费用"
+
+#. module: aiis_finance_dashboard
+#: model:ir.ui.menu,name:aiis_finance_dashboard.menu_aiis_finance_overall
+#: model:ir.actions.act_window,name:aiis_finance_dashboard.action_aiis_finance_overall
+msgid "Overall Profit"
+msgstr "整体盈利"
+
+#. module: aiis_finance_dashboard
+#: model:product.category,name:aiis_finance_dashboard.product_category_resale_software
+msgid "Resale Software Licenses"
+msgstr "转售软件许可证"
+
+#. module: aiis_finance_dashboard
+#: model:product.category,name:aiis_finance_dashboard.product_category_labor_cost
+msgid "Labor Cost"
+msgstr "人力成本"
+
+#. module: aiis_finance_dashboard
+#: model:product.category,name:aiis_finance_dashboard.product_category_company_assets
+msgid "Office Supplies"
+msgstr "办公用品"
+
+#. module: aiis_finance_dashboard
+#: model:product.category,name:aiis_finance_dashboard.product_category_it_software
+msgid "IT & Software Services"
+msgstr "IT软件服务"
+
+#. module: aiis_finance_dashboard
+#: model:account.account,name:aiis_finance_dashboard.account_labor_cost
+msgid "Labor Cost"
+msgstr "人力成本"
+
+#. module: aiis_finance_dashboard
+#: model:account.account,name:aiis_finance_dashboard.account_office_supplies
+msgid "Office Supplies"
+msgstr "办公用品"
+
+#. module: aiis_finance_dashboard
+#: model:account.account,name:aiis_finance_dashboard.account_it_software
+msgid "IT & Software Services"
+msgstr "IT软件服务"
+
+#. module: aiis_finance_dashboard
+#: model:account.account,name:aiis_finance_dashboard.account_employee_reimbursement
+msgid "Employee Reimbursement"
+msgstr "员工报销"
+
+#. module: aiis_finance_dashboard
+#: model:account.account,name:account.1_expense
+msgid "Other Administrative Expenses"
+msgstr "其他行政费用"
+
+#. module: aiis_finance_dashboard
+#: model:ir.model.fields,field_description:aiis_finance_dashboard.field_aiis_finance_entry__entry_type
+#: model:ir.model.fields.selection,name:aiis_finance_dashboard.selection__aiis_finance_entry__entry_type
+msgid "Type"
+msgstr "类型"
+
+#. module: aiis_finance_dashboard
+#: selection:aiis.finance.entry,entry_type:income
+msgid "Revenue"
+msgstr "收入"
+
+#. module: aiis_finance_dashboard
+#: selection:aiis.finance.entry,entry_type:cost
+msgid "Cost"
+msgstr "成本"
+
+#. module: aiis_finance_dashboard
+#: selection:aiis.finance.entry,entry_type:expense
+msgid "Expense"
+msgstr "费用"
+
+#. module: aiis_finance_dashboard
+#: model:ir.model.fields,field_description:aiis_finance_dashboard.field_aiis_finance_entry__amount
+msgid "Amount"
+msgstr "金额"
+
+#. module: aiis_finance_dashboard
+#: model:ir.model.fields,field_description:aiis_finance_dashboard.field_aiis_finance_entry__category_id
+msgid "Expense Category"
+msgstr "费用类别"
+
+#. module: aiis_finance_dashboard
+#: model:ir.model.fields,field_description:aiis_finance_dashboard.field_aiis_finance_entry__analytic_account_id
+msgid "Project / Analytic Account"
+msgstr "项目 / 分析账户"
+
+#. module: aiis_finance_dashboard
+#: model:ir.model.fields,field_description:aiis_finance_dashboard.field_aiis_finance_entry__department_id
+#: model:ir.model.fields,field_description:aiis_finance_dashboard.field_aiis_finance_summary__department_id
+msgid "Department"
+msgstr "部门"
+
+#. module: aiis_finance_dashboard
+#: model:ir.model.fields,field_description:aiis_finance_dashboard.field_aiis_finance_summary__type
+msgid "Line"
+msgstr "项目"
+
+#. module: aiis_finance_dashboard
+#: selection:aiis.finance.summary,type:profit
+msgid "Profit"
+msgstr "利润"
+
+#. module: aiis_finance_dashboard
+#: model:ir.model.fields,field_description:aiis_finance_dashboard.field_aiis_finance_summary__amount
+msgid "Amount"
+msgstr "金额"

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_payment_plan_form" model="ir.ui.view">
+        <field name="name">purchase.order.payment.plan</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase_order_form_aiis_approval"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="aiis_payment_managed" invisible="1"/>
+                <field name="aiis_can_review_terms" invisible="1"/>
+                <field name="aiis_can_receive" invisible="1"/>
+                <field name="aiis_can_accept" invisible="1"/>
+                <button name="action_confirm_supplier_terms" type="object" string="Confirm Terms"
+                        class="oe_highlight" invisible="not aiis_can_review_terms"/>
+                <button name="action_request_supplier_changes" type="object" string="Request Changes / Clarification"
+                        invisible="not aiis_can_review_terms"/>
+                <button name="action_confirm_purchase_acceptance" type="object" string="Confirm Acceptance"
+                        invisible="not aiis_can_accept" groups="aiis_procurement_request.group_procurement_buyer"/>
+            </xpath>
+            <xpath expr="//button[@name='button_confirm']" position="attributes">
+                <attribute name="invisible" add="aiis_payment_managed and aiis_approval_state == 'pending'" separator=" or "/>
+                <attribute name="string">Submit for Review</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_approval_approve']" position="attributes">
+                <attribute name="invisible" add="aiis_can_review_terms" separator=" or "/>
+            </xpath>
+            <xpath expr="//button[@name='action_approval_open_reject']" position="attributes">
+                <attribute name="invisible" add="aiis_can_review_terms" separator=" or "/>
+            </xpath>
+            <xpath expr="//button[@name='action_mark_received']" position="attributes">
+                <attribute name="invisible" add="not aiis_can_receive" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="readonly" add="aiis_payment_managed and aiis_approval_state == 'pending'" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="readonly" add="aiis_payment_managed and aiis_approval_state == 'pending'" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                <attribute name="readonly" add="aiis_payment_managed and aiis_approval_state == 'pending'" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='product_id']" position="attributes">
+                <attribute name="readonly" add="parent.aiis_payment_managed and parent.aiis_approval_state == 'pending'" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='product_qty']" position="attributes">
+                <attribute name="readonly" add="parent.aiis_payment_managed and parent.aiis_approval_state == 'pending'" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='price_unit']" position="attributes">
+                <attribute name="readonly" add="parent.aiis_payment_managed and parent.aiis_approval_state == 'pending'" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='product_uom']" position="attributes">
+                <attribute name="readonly" add="parent.aiis_payment_managed and parent.aiis_approval_state == 'pending'" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='taxes_id']" position="attributes">
+                <attribute name="readonly" add="parent.aiis_payment_managed and parent.aiis_approval_state == 'pending'" separator=" or "/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Supplier Terms &amp; Payments" name="supplier_payment_plan" invisible="not aiis_payment_managed">
+                    <group>
+                        <group>
+                            <field name="aiis_terms_review_state" widget="badge"/>
+                            <field name="aiis_settlement_mode" readonly="aiis_approval_state == 'pending' or state not in ('draft', 'sent')"/>
+                            <field name="aiis_supplier_confirmed" readonly="aiis_approval_state == 'pending' or state not in ('draft', 'sent')"/>
+                            <field name="aiis_supplier_offer" placeholder="Record the conditions accepted by the supplier."
+                                   readonly="aiis_approval_state == 'pending' or state not in ('draft', 'sent')"/>
+                            <field name="aiis_supplier_evidence_ids" widget="many2many_binary"
+                                   readonly="aiis_approval_state == 'pending' or state not in ('draft', 'sent')"/>
+                        </group>
+                        <group>
+                            <field name="aiis_cfo_feedback" invisible="not aiis_cfo_feedback"/>
+                            <field name="aiis_cfo_proposal" invisible="not aiis_cfo_proposal"/>
+                            <field name="aiis_available_payment"/>
+                            <field name="aiis_final_approval_date"/>
+                            <field name="aiis_full_receipt_date"/>
+                            <field name="aiis_acceptance_date"/>
+                            <field name="aiis_acceptance_user_id"/>
+                        </group>
+                    </group>
+                    <field name="aiis_payment_stage_ids" readonly="aiis_approval_state == 'pending' or state not in ('draft', 'sent')">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="percentage"/>
+                            <field name="trigger"/>
+                            <field name="days"/>
+                            <field name="amount" readonly="1"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="due_date" readonly="1"/>
+                            <field name="state" widget="badge"/>
+                        </tree>
+                    </field>
+                    <p>Only the current stage can be paid. Supplier agreement and evidence must be confirmed again after any change.</p>
+                    <field name="aiis_acceptance_note" invisible="not aiis_acceptance_note"/>
+                    <field name="aiis_acceptance_evidence_ids" widget="many2many_binary" invisible="not aiis_acceptance_date"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="bill_payment_plan_form" model="ir.ui.view">
+        <field name="name">account.move.purchase.payment.plan</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="view_purchase_bill_terms"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="aiis_payment_managed" invisible="1"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Approved Payment Plan" invisible="not aiis_payment_managed">
+                    <group><field name="aiis_available_payment"/></group>
+                    <field name="aiis_payment_stage_ids" readonly="1">
+                        <tree create="0" edit="0" delete="0">
+                            <field name="name"/>
+                            <field name="percentage"/>
+                            <field name="trigger"/>
+                            <field name="days"/>
+                            <field name="amount"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="due_date"/>
+                            <field name="state" widget="badge"/>
+                        </tree>
+                    </field>
+                    <p>Confirmation records the full bill. Payment is limited to the currently unlocked stage; receipt or acceptance cannot be skipped.</p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="supplier_terms_feedback_form" model="ir.ui.view">
+        <field name="name">aiis.purchase.terms.feedback.form</field>
+        <field name="model">aiis.purchase.terms.feedback</field>
+        <field name="arch" type="xml">
+            <form string="Supplier Terms Feedback">
+                <group>
+                    <field name="order_id"/>
+                    <field name="decision"/>
+                    <field name="reason"/>
+                    <field name="proposal" required="decision == 'changes'"/>
+                </group>
+                <p>Procurement must obtain the supplier's acceptance. Suggested terms do not replace the supplier agreement.</p>
+                <footer>
+                    <button name="action_return" string="Return to Procurement" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="purchase_acceptance_form" model="ir.ui.view">
+        <field name="name">aiis.purchase.acceptance.form</field>
+        <field name="model">aiis.purchase.acceptance</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Purchase Acceptance">
+                <group>
+                    <field name="order_id"/>
+                    <field name="note"/>
+                    <field name="evidence_ids" widget="many2many_binary"/>
+                </group>
+                <footer>
+                    <button name="action_accept" string="Confirm Acceptance" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

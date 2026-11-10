@@ -1,0 +1,224 @@
+# Translation of AIIS Customer Contract.
+msgid ""
+msgstr ""
+"Project-Id-Version: aiis_customer_contract\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh_CN\n"
+
+#. module: aiis_customer_contract
+#: model:ir.ui.menu,name:aiis_customer_contract.menu_customer_contract
+#: model:ir.actions.act_window,name:aiis_customer_contract.action_customer_contract
+msgid "Customer Contracts"
+msgstr "客户合同"
+
+#. module: aiis_customer_contract
+#: model:ir.ui.menu,name:aiis_customer_contract.menu_customer_contract_to_approve
+#: model:ir.actions.act_window,name:aiis_customer_contract.action_customer_contract_to_approve
+msgid "Contracts To Approve"
+msgstr "待我审批"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields.selection,name:aiis_customer_contract.selection__customer_contract__state__draft
+msgid "Draft"
+msgstr "草稿"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields.selection,name:aiis_customer_contract.selection__customer_contract__state__submitted
+msgid "Submitted"
+msgstr "已提交"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields.selection,name:aiis_customer_contract.selection__customer_contract__state__approved
+msgid "Approved"
+msgstr "已批准"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields.selection,name:aiis_customer_contract.selection__customer_contract__state__rejected
+msgid "Rejected"
+msgstr "已驳回"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields.selection,name:aiis_customer_contract.selection__customer_contract__state__converted
+msgid "SO Created (legacy)"
+msgstr "已生成销售单（旧流程）"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__salesperson_id
+msgid "Salesperson"
+msgstr "销售跟进人"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__manager_id
+msgid "Approver"
+msgstr "审批人"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__start_date
+msgid "Service Start"
+msgstr "服务开始日期"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__end_date
+msgid "Service End"
+msgstr "服务结束日期"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__reason
+msgid "Business Summary"
+msgstr "合同说明"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract_line__description
+msgid "Item / Service"
+msgstr "品名 / 服务内容"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract_line__unit_price
+msgid "Unit Price"
+msgstr "单价"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields.selection,name:aiis_customer_contract.selection__customer_contract__state__confirmed
+msgid "SO Confirmed"
+msgstr "销售单已确认"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__sale_order_id
+msgid "Quotation / Sales Order"
+msgstr "报价单 / 销售单"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__customer_po_ref
+msgid "Customer PO No."
+msgstr "客户 PO 号"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__customer_po_file
+msgid "Customer PO File"
+msgstr "客户 PO 原件"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__sale_line_ids
+msgid "Quotation Lines"
+msgstr "报价单明细"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__estimated_total
+msgid "Contract Amount"
+msgstr "合同金额"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_customer_contract__approved_amount
+msgid "Submitted Amount"
+msgstr "送审金额"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_sale_order__contract_id
+msgid "Customer Contract"
+msgstr "客户合同"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_sale_order__contract_state
+msgid "Contract Status"
+msgstr "合同状态"
+
+#. module: aiis_customer_contract
+#: model:ir.model.fields,field_description:aiis_customer_contract.field_sale_order__contract_ok
+msgid "Contract Approved"
+msgstr "合同已批准"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_order_form_contract
+msgid "Request Contract Approval"
+msgstr "发起合同审批"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_order_form_contract
+msgid "Contract"
+msgstr "合同"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_order_form_contract
+msgid "This quotation needs an approved customer contract before it can be confirmed."
+msgstr "该报价单需要先通过客户合同审批，才能确认为销售订单。"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_order_form_contract
+msgid "Once the customer has sent their PO, click"
+msgstr "客户回 PO 后，请点击"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_order_form_contract
+msgid "Contract status:"
+msgstr "合同状态："
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_customer_contract_form
+msgid "Quotation / SO"
+msgstr "报价单 / 销售单"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_customer_contract_form
+msgid "Quotation Lines"
+msgstr "报价单明细"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_customer_contract_form
+msgid "Submit for Approval"
+msgstr "提交审批"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_customer_contract_form
+msgid "Approve"
+msgstr "批准"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_customer_contract_form
+msgid "Reject"
+msgstr "驳回"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_customer_contract_form
+msgid "Reset to Draft"
+msgstr "退回草稿"
+
+#. module: aiis_customer_contract
+#: model_terms:ir.ui.view,arch_db:aiis_customer_contract.view_customer_contract_form
+msgid "Reason for rejection (required to reject)"
+msgstr "驳回原因（驳回时必填）"
+
+#. module: aiis_customer_contract
+#. odoo-python
+#: code:addons/aiis_customer_contract/models/customer_contract.py:0
+msgid "A contract has to be started from its quotation: open the quotation and click 'Request Contract Approval'."
+msgstr "合同必须从报价单发起：请打开报价单，点击“发起合同审批”。"
+
+#. module: aiis_customer_contract
+#. odoo-python
+#: code:addons/aiis_customer_contract/models/customer_contract.py:0
+msgid "Enter the customer's PO number before submitting."
+msgstr "提交前请填写客户 PO 号。"
+
+#. module: aiis_customer_contract
+#. odoo-python
+#: code:addons/aiis_customer_contract/models/customer_contract.py:0
+msgid "Attach the customer's PO before submitting."
+msgstr "提交前请上传客户 PO 原件。"
+
+#. module: aiis_customer_contract
+#. odoo-python
+#: code:addons/aiis_customer_contract/models/customer_contract.py:0
+msgid "The quotation was changed after this contract was submitted (%(old)s → %(new)s). Reset the contract to draft and submit it again."
+msgstr "合同提交后报价单已被修改（%(old)s → %(new)s）。请将合同退回草稿后重新提交审批。"
+
+#. module: aiis_customer_contract
+#. odoo-python
+#: code:addons/aiis_customer_contract/models/sale_order.py:0
+msgid "%s cannot be confirmed yet: it needs an approved customer contract first. Use 'Request Contract Approval' on the quotation."
+msgstr "%s 暂时不能确认：需要先通过客户合同审批。请在报价单上点击“发起合同审批”。"
+
+#. module: aiis_customer_contract
+#. odoo-python
+#: code:addons/aiis_customer_contract/models/sale_order.py:0
+msgid "%(so)s was changed after its contract was approved (%(old)s → %(new)s). Reset contract %(ct)s to draft and submit it again."
+msgstr "%(so)s 在合同批准后被修改过（%(old)s → %(new)s）。请将合同 %(ct)s 退回草稿后重新提交审批。"

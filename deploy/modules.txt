@@ -1,0 +1,1 @@
+aiis_access,aiis_dashboard,aiis_documents,aiis_theme,aiis_finance,aiis_finance_dashboard,aiis_project,hr_salary_in_work_info

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- On install and every upgrade: compile the interface in this
+         database's brand colour (the main company's primary colour). -->
+    <function model="res.company" name="_aiis_sync_brand"/>
+</odoo>

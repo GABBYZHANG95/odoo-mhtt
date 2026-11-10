@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Department root containers (top-level "apps") -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_aiis_hr_root"
+              name="Human Resources"
+              sequence="5"
+              web_icon="hr,static/description/icon.png"/>
+
+    <menuitem id="menu_aiis_finance_root"
+              name="Finance"
+              sequence="10"
+              web_icon="account,static/description/icon.png"/>
+
+    <menuitem id="menu_aiis_purchase_root"
+              name="Procurement"
+              sequence="15"
+              web_icon="purchase,static/description/icon.png"/>
+
+    <menuitem id="menu_aiis_sales_root"
+              name="Sales"
+              sequence="17"
+              web_icon="sale,static/description/icon.png"/>
+
+
+    <!-- ============================================================ -->
+    <!-- Re-parent the existing native app menus under the department -->
+    <!-- containers above, instead of duplicating them. This keeps    -->
+    <!-- every original sub-menu, action and translation intact.      -->
+    <!-- ============================================================ -->
+
+    <!-- Human Resources: Employees, Attendances, Time Off, Expenses -->
+    <record id="hr.menu_hr_root" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_aiis_hr_root"/>
+        <field name="sequence">10</field>
+    </record>
+    <record id="hr_attendance.menu_hr_attendance_root" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_aiis_hr_root"/>
+        <field name="sequence">20</field>
+    </record>
+    <record id="hr_holidays.menu_hr_holidays_root" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_aiis_hr_root"/>
+        <field name="sequence">30</field>
+    </record>
+    <record id="hr_expense.menu_hr_expense_root" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_aiis_hr_root"/>
+        <field name="sequence">40</field>
+    </record>
+
+    <!-- Finance: Invoicing -->
+    <record id="account.menu_finance" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_aiis_finance_root"/>
+        <field name="sequence">10</field>
+    </record>
+
+    <!-- Procurement: Purchase (Vendors is already a sub-menu inside it) -->
+    <record id="purchase.menu_purchase_root" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_aiis_purchase_root"/>
+        <field name="sequence">10</field>
+    </record>
+
+    <!-- Sales: Quotations / Sales Orders. Odoo 17 ships this menu inactive
+         unless sale_management is installed (which we don't need), so turn
+         it on here - quotations are where customer contracts start from. -->
+    <record id="sale.sale_menu_root" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_aiis_sales_root"/>
+        <field name="sequence">1</field>
+        <field name="active" eval="True"/>
+    </record>
+
+
+    <!-- ============================================================ -->
+    <!-- Top-level sidebar order:                                     -->
+    <!-- Calendar, HR, Finance, Procurement, Clients, Discuss,         -->
+    <!-- Dashboards, Apps, Settings                                    -->
+    <!-- ============================================================ -->
+    <record id="calendar.mail_menu_calendar" model="ir.ui.menu">
+        <field name="sequence">1</field>
+    </record>
+
+    <!-- Contacts -> renamed to Clients -->
+    <record id="contacts.menu_contacts" model="ir.ui.menu">
+        <field name="name">Clients</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="mail.menu_root_discuss" model="ir.ui.menu">
+        <field name="sequence">25</field>
+    </record>
+
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu">
+        <field name="sequence">30</field>
+    </record>
+
+
+    <!-- ============================================================ -->
+    <!-- Hide "Kiosk Mode" from Attendances: it force-logs-out the     -->
+    <!-- current user by design (it's meant for a dedicated public     -->
+    <!-- check-in terminal, not for admin browsing), which was         -->
+    <!-- causing accidental "Session Expired" logouts.                 -->
+    <!-- ============================================================ -->
+    <record id="hr_attendance.menu_hr_attendance_kiosk_no_user_mode" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Apps (install / uninstall modules): system administrators only,
+         as in standard Odoo (design doc 1.4) -->
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+</odoo>

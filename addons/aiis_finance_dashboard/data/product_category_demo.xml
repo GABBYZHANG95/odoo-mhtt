@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Demo data only (these categories exist only with product demo data):
+         route the demo "Office Furniture" / "Software" categories into the
+         same buckets, so anything tagged to them reports consistently too. -->
+    <data noupdate="1">
+        <record id="product.product_category_5" model="product.category">
+            <field name="property_account_expense_categ_id" ref="account_office_supplies"/>
+        </record>
+        <record id="product.product_category_4" model="product.category">
+            <field name="property_account_expense_categ_id" ref="account_it_software"/>
+        </record>
+    </data>
+</odoo>

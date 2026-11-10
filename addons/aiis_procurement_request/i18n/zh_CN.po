@@ -1,0 +1,79 @@
+# Translation of AIIS Procurement Request.
+msgid ""
+msgstr ""
+"Project-Id-Version: aiis_procurement_request\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh_CN\n"
+
+#. module: aiis_procurement_request
+#: model:ir.ui.menu,name:aiis_procurement_request.menu_procurement_request
+#: model:ir.actions.act_window,name:aiis_procurement_request.action_procurement_request
+msgid "Procurement Requests (PR)"
+msgstr "采购申请（PR）"
+
+#. module: aiis_procurement_request
+#: model:ir.ui.menu,name:aiis_procurement_request.menu_procurement_request_to_approve
+#: model:ir.actions.act_window,name:aiis_procurement_request.action_procurement_request_to_approve
+msgid "Requests To Approve"
+msgstr "待我审批"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields.selection,name:aiis_procurement_request.selection__procurement_request__state__draft
+msgid "Draft"
+msgstr "草稿"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields.selection,name:aiis_procurement_request.selection__procurement_request__state__submitted
+msgid "Submitted"
+msgstr "已提交"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields.selection,name:aiis_procurement_request.selection__procurement_request__state__approved
+msgid "Approved"
+msgstr "已批准"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields.selection,name:aiis_procurement_request.selection__procurement_request__state__rejected
+msgid "Rejected"
+msgstr "已驳回"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields.selection,name:aiis_procurement_request.selection__procurement_request__state__converted
+msgid "Converted to PO"
+msgstr "已转采购单"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields,field_description:aiis_procurement_request.field_procurement_request__employee_id
+msgid "Requested By"
+msgstr "申请人"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields,field_description:aiis_procurement_request.field_procurement_request__manager_id
+msgid "Approver"
+msgstr "审批人"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields,field_description:aiis_procurement_request.field_procurement_request__needed_by_date
+msgid "Needed By"
+msgstr "需要日期"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields,field_description:aiis_procurement_request.field_procurement_request__reason
+msgid "Business Reason"
+msgstr "用途说明"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields,field_description:aiis_procurement_request.field_procurement_request_line__description
+msgid "Item / Specification"
+msgstr "品名 / 规格"
+
+#. module: aiis_procurement_request
+#: model:ir.model.fields,field_description:aiis_procurement_request.field_procurement_request_line__estimated_unit_price
+msgid "Est. Unit Price"
+msgstr "预计单价"
+
+#. module: aiis_procurement_request
+#: model:ir.ui.menu,name:aiis_procurement_request.menu_vendor_bills_to_process
+#: model:ir.actions.act_window,name:aiis_procurement_request.action_vendor_bills_to_process
+msgid "Bills to Process"
+msgstr "待处理账单"

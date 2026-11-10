@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_operations_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">aiis_operations_dashboard</field>
+    </record>
+
+    <!-- Design doc 6.9: its own top-level menu, next to Finance; CEO and Chairman only -->
+    <menuitem id="menu_operations_dashboard"
+              name="Dashboard"
+              action="action_operations_dashboard"
+              groups="group_operations_dashboard"
+              web_icon="board,static/description/icon.png"
+              sequence="3"/>
+</odoo>

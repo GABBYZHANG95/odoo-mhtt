@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Route every built-in Expense-app category (Meals, Travel, Mileage,
+        Gifts, Communication, Others) straight to the "Employee
+        Reimbursement" account, overriding whatever their product category
+        would otherwise use. Employees still pick the specific type when
+        filing a report (that detail stays visible inside the Expense app);
+        for the company-wide Finance report they all roll up into one
+        "Employee Reimbursement" bucket, which is the level of detail that
+        was asked for.
+    -->
+    <record id="hr_expense.expense_product_meal_product_template" model="product.template">
+        <field name="property_account_expense_id" ref="account_employee_reimbursement"/>
+    </record>
+    <record id="hr_expense.expense_product_travel_accommodation_product_template" model="product.template">
+        <field name="property_account_expense_id" ref="account_employee_reimbursement"/>
+    </record>
+    <record id="hr_expense.expense_product_mileage_product_template" model="product.template">
+        <field name="property_account_expense_id" ref="account_employee_reimbursement"/>
+    </record>
+    <record id="hr_expense.expense_product_gift_product_template" model="product.template">
+        <field name="property_account_expense_id" ref="account_employee_reimbursement"/>
+    </record>
+    <record id="hr_expense.expense_product_communication_product_template" model="product.template">
+        <field name="property_account_expense_id" ref="account_employee_reimbursement"/>
+    </record>
+    <record id="hr_expense.product_product_no_cost_product_template" model="product.template">
+        <field name="property_account_expense_id" ref="account_employee_reimbursement"/>
+    </record>
+
+</odoo>

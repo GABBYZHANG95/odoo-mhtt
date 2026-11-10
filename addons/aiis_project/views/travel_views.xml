@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_aiis_travel_request_form" model="ir.ui.view">
+        <field name="name">aiis.travel.request.form</field>
+        <field name="model">aiis.travel.request</field>
+        <field name="arch" type="xml">
+            <form string="Travel Request">
+                <header>
+                    <field name="approval_can_act" invisible="1"/>
+                    <field name="approval_can_withdraw" invisible="1"/>
+                    <field name="aiis_approval_state" invisible="1"/>
+                    <button name="action_submit" string="Submit for Approval" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approval_approve" string="Approve" type="object" class="oe_highlight"
+                            invisible="not approval_can_act"/>
+                    <button name="action_approval_open_reject" string="Reject" type="object" invisible="not approval_can_act"/>
+                    <button name="action_approval_withdraw" string="Withdraw" type="object" invisible="not approval_can_withdraw"/>
+                    <field name="claim_editable" invisible="1"/>
+                    <button name="action_submit_claim" string="Submit Claim" type="object" class="oe_highlight"
+                            invisible="not claim_editable"
+                            confirm="Submit the actual expenses and receipts for reimbursement? They cannot be changed afterwards unless the claim is returned."/>
+                    <field name="state" invisible="1"/>
+                    <field name="claim_stage" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="aiis_approval_state != 'pending'">
+                        Waiting for approval: <field name="approval_pending_names" class="fw-bold"/>
+                    </div>
+                    <field name="claim_over" invisible="1"/>
+                    <div class="alert alert-info" role="alert" invisible="claim_stage != 'approved' or claim_returned_reason">
+                        After the trip, list the actual expenses and attach the receipts under Actual Expenses, then click Submit Claim.
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="not claim_returned_reason">
+                        Claim returned - <field name="claim_returned_reason" class="d-inline"/>.
+                        Correct the expenses or receipts and click Submit Claim again.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="claim_stage != 'claimed'">
+                        Claim submitted<span invisible="not claim_pending_names">, waiting for approval: <field name="claim_pending_names" class="fw-bold"/></span>.
+                    </div>
+                    <div class="alert alert-success" role="alert" invisible="claim_stage != 'paid'">
+                        Claim paid.
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="not claim_over">
+                        The actual expenses (<field name="claim_total" class="d-inline"/>) are over the approved budget.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="project_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="destination" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="budget" readonly="state != 'draft'"/>
+                            <field name="amount_claimed" invisible="state != 'approved'"/>
+                        </group>
+                    </group>
+                    <field name="purpose" placeholder="Purpose of the trip" readonly="state != 'draft'"/>
+                    <notebook>
+                        <page string="Actual Expenses" name="claim" invisible="state != 'approved'">
+                            <field name="claim_default_product_id" invisible="1"/>
+                            <field name="claim_line_ids" readonly="not claim_editable"
+                                   context="{'default_employee_id': employee_id, 'default_product_id': claim_default_product_id}">
+                                <tree editable="bottom">
+                                    <field name="date"/>
+                                    <field name="name" string="Description"/>
+                                    <field name="product_id" required="1" options="{'no_create': True, 'no_open': True}"
+                                           domain="[('can_be_expensed', '=', True), ('standard_price', '=', 0)]"/>
+                                    <field name="company_id" column_invisible="1"/>
+                                    <field name="employee_id" column_invisible="1"/>
+                                    <field name="state" column_invisible="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="company_currency_id" column_invisible="1"/>
+                                    <field name="product_has_cost" column_invisible="1"/>
+                                    <field name="total_amount_currency" string="Amount" sum="Total" readonly="product_has_cost"/>
+                                </tree>
+                            </field>
+                            <group>
+                                <group>
+                                    <field name="claim_total"/>
+                                    <field name="claim_receipt_ids" widget="many2many_binary" readonly="not claim_editable"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Expense Reports" name="expenses" invisible="state != 'approved'">
+                            <field name="expense_sheet_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="total_amount"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Approvals" name="approvals">
+                            <field name="approval_progress_html" nolabel="1"/>
+                            <field name="claim_approval_html" nolabel="1" invisible="not claim_approval_html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_aiis_travel_request_tree" model="ir.ui.view">
+        <field name="name">aiis.travel.request.tree</field>
+        <field name="model">aiis.travel.request</field>
+        <field name="arch" type="xml">
+            <tree string="Travel Requests">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="project_id"/>
+                <field name="destination"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="budget"/>
+                <field name="amount_claimed" optional="show"/>
+                <field name="state" column_invisible="1"/>
+                <field name="claim_stage" widget="badge" decoration-success="claim_stage == 'paid'"
+                       decoration-info="claim_stage in ('submitted', 'claimed')" decoration-primary="claim_stage == 'approved'"/>
+                <field name="approval_pending_names" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aiis_travel_request_search" model="ir.ui.view">
+        <field name="name">aiis.travel.request.search</field>
+        <field name="model">aiis.travel.request</field>
+        <field name="arch" type="xml">
+            <search string="Travel Requests">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="project_id"/>
+                <filter string="Mine" name="filter_mine" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter string="Waiting for My Approval" name="filter_my_approval" domain="[('is_my_approval', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Project" name="groupby_project" context="{'group_by': 'project_id'}"/>
+                    <filter string="Traveller" name="groupby_employee" context="{'group_by': 'employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_aiis_travel_request" model="ir.actions.act_window">
+        <field name="name">Travel Requests</field>
+        <field name="res_model">aiis.travel.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_aiis_travel_request_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No travel requests yet</p>
+            <p>Delivery and maintenance trips are approved before travelling; the costs are claimed afterwards
+               with an expense report linked to the request.</p>
+        </field>
+    </record>
+
+    <!-- Expense report: link the trip; trip reimbursements use the engine's buttons -->
+    <record id="view_hr_expense_sheet_form_aiis_travel" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.aiis.travel</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_approve_expense_sheets']" position="attributes">
+                <attribute name="invisible">not can_approve or state != 'submit' or aiis_travel_request_id</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_refuse_expense_sheets']" position="attributes">
+                <attribute name="invisible">state not in ('submit', 'approve') or aiis_travel_request_id</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_approve_expense_sheets']" position="before">
+                <field name="approval_can_act" invisible="1"/>
+                <field name="approval_can_withdraw" invisible="1"/>
+                <field name="aiis_approval_state" invisible="1"/>
+                <button name="action_approval_approve" string="Approve" type="object" class="oe_highlight"
+                        invisible="not approval_can_act"/>
+                <button name="action_approval_open_reject" string="Reject" type="object" invisible="not approval_can_act"/>
+                <button name="action_approval_withdraw" string="Withdraw" type="object" invisible="not approval_can_withdraw"/>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <field name="aiis_on_engine" invisible="1"/>
+                <div class="alert alert-warning" role="alert" invisible="not aiis_on_engine or aiis_approval_state != 'pending'">
+                    Waiting for approval: <field name="approval_pending_names" class="fw-bold d-inline"/>
+                </div>
+                <div class="alert alert-danger" role="alert" invisible="not aiis_on_engine or aiis_approval_state != 'rejected' or state != 'draft'">
+                    Returned by <field name="approval_rejection_note" class="d-inline"/>:
+                    <field name="approval_rejection_reason" class="d-inline"/>
+                </div>
+                <field name="aiis_claim_over" invisible="1"/>
+                <field name="aiis_claim_currency_id" invisible="1"/>
+                <div class="alert alert-danger" role="alert" invisible="not aiis_claim_over">
+                    Over the request's estimate of <field name="aiis_claim_estimate" class="d-inline fw-bold"/> - the approvers decide.
+                </div>
+            </xpath>
+            <!-- Odoo's expense manager does not approve these: the engine does -->
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="invisible">aiis_on_engine</attribute>
+            </xpath>
+            <xpath expr="//field[@name='employee_id']" position="after">
+                <field name="aiis_travel_request_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                <field name="aiis_project_id" invisible="not aiis_travel_request_id"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Approvals" name="aiis_approvals" invisible="not aiis_travel_request_id">
+                    <field name="approval_progress_html" nolabel="1"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

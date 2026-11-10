@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Procurement work stays under Purchase; To do contains vendor bills. -->
+    <menuitem id="menu_procurement_request"
+              name="Procurement Requests (PR)"
+              parent="aiis_department_menu.menu_aiis_purchase_root"
+              action="action_procurement_request"
+              sequence="5"/>
+
+    <menuitem id="menu_procurement_request_to_convert"
+              name="Purchase Requests to Convert"
+              parent="aiis_department_menu.menu_aiis_purchase_root"
+              action="action_procurement_request_to_convert"
+              groups="group_procurement_buyer"
+              sequence="20"/>
+
+    <!-- Old bookmarks must also open the personal inbox, never all bills. -->
+    <record id="action_vendor_bills_to_process" model="ir.actions.act_window">
+        <field name="name">To do</field>
+        <field name="res_model">aiis.todo</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="aiis_approval.view_aiis_todo_tree"/>
+        <field name="search_view_id" ref="aiis_approval.view_aiis_todo_search"/>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">You have no pending tasks</p>
+        </field>
+    </record>
+
+    <record id="menu_vendor_bills_to_process" model="ir.ui.menu">
+        <field name="name">Bills to Process</field>
+        <field name="parent_id" ref="aiis_approval.menu_aiis_my_approvals"/>
+        <field name="action" ref="action_vendor_bills_to_process"/>
+        <field name="groups_id" eval="[(6, 0, [ref('account.group_account_invoice')])]"/>
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

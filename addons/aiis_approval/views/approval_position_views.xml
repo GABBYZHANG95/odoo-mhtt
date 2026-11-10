@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_aiis_approval_position_tree" model="ir.ui.view">
+        <field name="name">aiis.approval.position.tree</field>
+        <field name="model">aiis.approval.position</field>
+        <field name="arch" type="xml">
+            <tree string="Positions" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code" groups="base.group_no_one"/>
+                <field name="user_id"/>
+                <field name="active" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_aiis_approval_position" model="ir.actions.act_window">
+        <field name="name">Positions</field>
+        <field name="res_model">aiis.approval.position</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No positions yet</p>
+            <p>Each position (CEO, Chairman, CFO, ...) has one holder who approves for it.
+               Holding a position gives no access rights - grant the user's groups separately.</p>
+        </field>
+    </record>
+
+</odoo>

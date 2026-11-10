@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_aiis_my_approvals"
+              name="To do"
+              sequence="1"
+              web_icon="aiis_approval,static/description/icon.png"/>
+    <!-- Open the personal inbox directly, with no intermediate submenu. -->
+    <record id="menu_aiis_my_approvals" model="ir.ui.menu">
+        <field name="action" ref="action_aiis_todo"/>
+    </record>
+
+    <!-- Retain stable IDs while removing these entries from navigation. -->
+    <record id="menu_aiis_my_approvals_waiting" model="ir.ui.menu">
+        <field name="name">Waiting for Me</field>
+        <field name="parent_id" ref="menu_aiis_my_approvals"/>
+        <field name="action" ref="action_aiis_my_approvals"/>
+        <field name="sequence">10</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="menu_aiis_my_approvals_returned" model="ir.ui.menu">
+        <field name="name">Returned to Me</field>
+        <field name="parent_id" ref="menu_aiis_my_approvals"/>
+        <field name="action" ref="action_aiis_returned_to_me"/>
+        <field name="sequence">20</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <menuitem id="menu_aiis_approval_config"
+              name="Approvals"
+              parent="base.menu_administration"
+              groups="base.group_system"
+              sequence="45"/>
+
+    <menuitem id="menu_aiis_approval_position"
+              name="Positions"
+              parent="menu_aiis_approval_config"
+              action="action_aiis_approval_position"
+              sequence="10"/>
+
+    <menuitem id="menu_aiis_approval_template"
+              name="Approval Templates"
+              parent="menu_aiis_approval_config"
+              action="action_aiis_approval_template"
+              sequence="20"/>
+
+    <menuitem id="menu_aiis_approval_request"
+              name="Approval Requests"
+              parent="menu_aiis_approval_config"
+              action="action_aiis_approval_request"
+              sequence="30"/>
+
+</odoo>

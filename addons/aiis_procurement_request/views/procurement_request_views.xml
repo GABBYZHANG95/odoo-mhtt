@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_procurement_request_form" model="ir.ui.view">
+        <field name="name">procurement.request.form</field>
+        <field name="model">procurement.request</field>
+        <field name="arch" type="xml">
+            <form string="Procurement Request">
+                <header>
+                    <button name="action_submit" string="Submit for Approval" type="object"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="approval_can_act" invisible="1"/>
+                    <field name="approval_can_withdraw" invisible="1"/>
+                    <field name="aiis_approval_state" invisible="1"/>
+                    <button name="action_approval_approve" string="Approve" type="object"
+                            class="oe_highlight" invisible="not approval_can_act"/>
+                    <button name="action_approval_open_reject" string="Reject" type="object"
+                            invisible="not approval_can_act"/>
+                    <button name="action_approval_withdraw" string="Withdraw" type="object"
+                            invisible="not approval_can_withdraw"
+                            confirm="Withdraw this request? It goes back to draft."/>
+                    <button name="action_create_po" string="Create Purchase Order" type="object"
+                            class="oe_highlight" invisible="not can_create_po"
+                            groups="purchase.group_purchase_user"/>
+                    <button name="action_mark_received" string="Mark as Received" type="object"
+                            class="oe_highlight" groups="purchase.group_purchase_user"
+                            invisible="state != 'converted' or po_approval_status != 'approved'"/>
+                    <field name="can_create_po" invisible="1"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,converted,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-info" role="status" invisible="not workflow_hint">
+                        <i class="fa fa-info-circle me-1"/><field name="workflow_hint" nolabel="1" class="d-inline"/>
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="aiis_approval_state != 'rejected' or state != 'draft'">
+                        <div>Rejected by <field name="approval_rejection_note" class="fw-bold"/>:</div>
+                        <field name="approval_rejection_reason"/>
+                        <div class="small mt-1">Change the request and submit it again.</div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="manager_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="request_date" readonly="state != 'draft'"/>
+                            <field name="needed_by_date" readonly="state != 'draft'"/>
+                            <field name="currency_id" readonly="state != 'draft'"/>
+                            <field name="analytic_account_id" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <field name="reason" placeholder="Why do we need this?" readonly="state != 'draft'"/>
+                    <notebook>
+                        <page string="Items">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <tree editable="bottom">
+                                    <!-- The description is what the employee fills in; the
+                                         product is only for picking something already in the
+                                         catalog - Procurement creates new products when
+                                         converting to a PO, so no "Create" here -->
+                                    <field name="description" placeholder="What to buy - item, spec / model"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="product_id" string="Existing Product (optional)"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="estimated_unit_price" string="Reference Unit Price (optional)"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="estimated_subtotal" sum="Total"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="estimated_total"/>
+                            </group>
+                        </page>
+                        <page string="Approvals" name="aiis_approvals">
+                            <field name="approval_progress_html" nolabel="1"/>
+                        </page>
+                    </notebook>
+                    <group string="Purchase Order" invisible="state not in ('converted', 'done')">
+                        <field name="purchase_order_id" readonly="1" groups="purchase.group_purchase_user"/>
+                        <field name="po_approval_status"/>
+                        <field name="payment_status" invisible="po_approval_status != 'approved'"/>
+                        <field name="receipt_status" invisible="not receipt_status"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_procurement_request_tree" model="ir.ui.view">
+        <field name="name">procurement.request.tree</field>
+        <field name="model">procurement.request</field>
+        <field name="arch" type="xml">
+            <tree string="Procurement Requests">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="request_date"/>
+                <field name="needed_by_date"/>
+                <field name="estimated_total" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('approved','converted','done')"
+                       decoration-info="state == 'submitted'"/>
+                <field name="approval_pending_names" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_procurement_request_search" model="ir.ui.view">
+        <field name="name">procurement.request.search</field>
+        <field name="model">procurement.request</field>
+        <field name="arch" type="xml">
+            <search string="Procurement Requests">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <filter string="My Requests" name="filter_mine" domain="[('employee_id.user_id','=',uid)]"/>
+                <filter string="Waiting for My Approval" name="filter_to_approve"
+                        domain="[('is_my_approval','=',True)]"/>
+                <separator/>
+                <filter string="Draft" name="filter_draft" domain="[('state','=','draft')]"/>
+                <filter string="Submitted" name="filter_submitted" domain="[('state','=','submitted')]"/>
+                <filter string="Approved" name="filter_approved" domain="[('state','=','approved')]"/>
+                <filter string="Last Submission Rejected" name="filter_rejected" domain="[('aiis_approval_state','=','rejected')]"/>
+                <filter string="Done" name="filter_done" domain="[('state','=','done')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="groupby_state" context="{'group_by':'state'}"/>
+                    <filter string="Department" name="groupby_department" context="{'group_by':'department_id'}"/>
+                    <filter string="Requested By" name="groupby_employee" context="{'group_by':'employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_procurement_request" model="ir.actions.act_window">
+        <field name="name">Procurement Requests</field>
+        <field name="res_model">procurement.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_procurement_request_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No procurement requests yet
+            </p>
+            <p>
+                Employees create a request here first (what to buy, spec,
+                quantity) - no vendor involved yet. Once their reporting
+                line has approved it, Procurement converts it into a real
+                Purchase Order.
+            </p>
+        </field>
+    </record>
+
+    <!-- My Approvals › Purchase Requests to Convert: the procurement
+         department's to-do list (#48) -->
+    <record id="action_procurement_request_to_convert" model="ir.actions.act_window">
+        <field name="name">Purchase Requests to Convert</field>
+        <field name="res_model">procurement.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_procurement_request_search"/>
+        <field name="domain">[('state', '=', 'approved'), ('purchase_order_id', '=', False)]</field>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No approved request is waiting for a purchase order</p>
+        </field>
+    </record>
+
+</odoo>

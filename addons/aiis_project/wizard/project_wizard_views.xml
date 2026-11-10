@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_aiis_project_accept_wizard_form" model="ir.ui.view">
+        <field name="name">aiis.project.accept.wizard.form</field>
+        <field name="model">aiis.project.accept.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Customer Accepted">
+                <p>Record the customer's purchase order. The project moves on to the contract stage.</p>
+                <group>
+                    <field name="project_id" invisible="1"/>
+                    <field name="customer_po_ref"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_aiis_project_reject_wizard_form" model="ir.ui.view">
+        <field name="name">aiis.project.reject.wizard.form</field>
+        <field name="model">aiis.project.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Customer Rejected">
+                <group>
+                    <field name="project_id" invisible="1"/>
+                    <field name="outcome" widget="radio"/>
+                    <field name="restart_date" invisible="outcome != 'pause'" required="outcome == 'pause'"/>
+                    <field name="reason" placeholder="Why did the customer decline?"/>
+                </group>
+                <p class="text-muted" invisible="outcome != 'pause'">
+                    The salesperson gets a reminder on the restart date. A restarted project goes back to
+                    solution design, keeping its BOM and costs.
+                </p>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_aiis_project_renew_wizard_form" model="ir.ui.view">
+        <field name="name">aiis.project.renew.wizard.form</field>
+        <field name="model">aiis.project.renew.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Renew Maintenance">
+                <group>
+                    <field name="project_id" invisible="1"/>
+                    <field name="current_end"/>
+                    <field name="new_end"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Renew" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_aiis_project_pr_wizard_form" model="ir.ui.view">
+        <field name="name">aiis.project.pr.wizard.form</field>
+        <field name="model">aiis.project.pr.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Purchase Request">
+                <p>Enter the quantity to request now on each BOM line. The request goes straight to Procurement.</p>
+                <group>
+                    <field name="project_id" invisible="1"/>
+                    <field name="needed_by_date"/>
+                    <field name="reason" placeholder="e.g. Batch 2 - site installation"/>
+                </group>
+                <field name="line_ids">
+                    <tree editable="bottom" create="0" delete="0">
+                        <field name="bom_line_id" column_invisible="1"/>
+                        <field name="name"/>
+                        <field name="specification"/>
+                        <field name="qty_bom"/>
+                        <field name="qty_requested"/>
+                        <field name="qty_remaining"/>
+                        <field name="uom_id"/>
+                        <field name="quantity"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button name="action_confirm" string="Create Purchase Request" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

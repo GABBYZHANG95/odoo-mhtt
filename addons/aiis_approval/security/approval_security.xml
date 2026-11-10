@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Approval records are written by the engine (sudo); users only read.
+         Who can read (design doc 7.6): the submitter, anyone on the approver
+         list, and administrators. Everyone else sees a document's progress
+         through the document itself (approval_progress_html). -->
+    <record id="approval_request_rule_user" model="ir.rule">
+        <field name="name">Approval Request: submitter / approvers</field>
+        <field name="model_id" ref="model_aiis_approval_request"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', ('submitter_id', '=', user.id), ('line_ids.user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="approval_request_rule_admin" model="ir.rule">
+        <field name="name">Approval Request: administrators see all</field>
+        <field name="model_id" ref="model_aiis_approval_request"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="approval_line_rule_user" model="ir.rule">
+        <field name="name">Approval Line: own / submitted by me</field>
+        <field name="model_id" ref="model_aiis_approval_line"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('submitter_id', '=', user.id)]</field>
+    </record>
+
+    <record id="approval_line_rule_admin" model="ir.rule">
+        <field name="name">Approval Line: administrators see all</field>
+        <field name="model_id" ref="model_aiis_approval_line"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Global: even administrators use their own inbox, not everybody's. -->
+    <record id="todo_rule_owner" model="ir.rule">
+        <field name="name">To do: assigned to current user</field>
+        <field name="model_id" ref="model_aiis_todo"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+</odoo>

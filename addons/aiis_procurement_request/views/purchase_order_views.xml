@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase_order_form_aiis_approval" model="ir.ui.view">
+        <field name="name">purchase.order.form.aiis.approval</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="readonly" add="state in ('purchase', 'done')" separator=" or "/>
+            </xpath>
+            <!-- The bill is created by the approval; open it from Vendor Bills -->
+            <xpath expr="//header/button[@name='action_create_invoice'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_create_invoice'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="readonly" add="state in ('purchase', 'done')" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                <attribute name="readonly" add="state in ('purchase', 'done')" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='product_id']" position="attributes">
+                <attribute name="readonly" add="parent.state in ('purchase', 'done')" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='product_uom']" position="attributes">
+                <attribute name="readonly" add="parent.state in ('purchase', 'done')" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='product_qty']" position="attributes">
+                <attribute name="readonly" add="parent.state in ('purchase', 'done')" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='price_unit']" position="attributes">
+                <attribute name="readonly" add="parent.state in ('purchase', 'done')" separator=" or "/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='taxes_id']" position="attributes">
+                <attribute name="readonly" add="parent.state in ('purchase', 'done')" separator=" or "/>
+            </xpath>
+            <!-- Native "Approve Order" (any Purchase Manager) is replaced by
+                 the approval engine's buttons below -->
+            <xpath expr="//button[@name='button_approve']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_approve']" position="after">
+                <field name="is_fully_received" invisible="1"/>
+                <field name="aiis_approval_state" invisible="1"/>
+                <field name="approval_can_act" invisible="1"/>
+                <field name="approval_can_withdraw" invisible="1"/>
+                <button name="action_approval_approve" string="Approve" type="object" class="oe_highlight"
+                        invisible="not approval_can_act"/>
+                <button name="action_approval_open_reject" string="Reject" type="object"
+                        invisible="not approval_can_act"/>
+                <button name="action_approval_withdraw" string="Withdraw" type="object"
+                        invisible="not approval_can_withdraw"
+                        confirm="Withdraw this order from approval? It goes back to draft."/>
+                <button name="action_mark_received" string="Mark as Received" type="object" class="oe_highlight"
+                        invisible="state not in ('purchase', 'done') or is_fully_received"
+                        groups="purchase.group_purchase_user"
+                        confirm="Set every line as fully received?"/>
+            </xpath>
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-info" role="status" invisible="not workflow_hint">
+                    <i class="fa fa-info-circle me-1"/><field name="workflow_hint" nolabel="1" class="d-inline"/>
+                </div>
+                <div class="alert alert-danger" role="alert" invisible="aiis_approval_state != 'rejected' or state != 'draft'">
+                    <div>Rejected by <field name="approval_rejection_note" class="fw-bold"/>:</div>
+                    <field name="approval_rejection_reason"/>
+                    <div class="small mt-1">Revise the order and confirm it again to resubmit it for approval.</div>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="aiis_payment_status" widget="badge" invisible="state not in ('purchase', 'done')"
+                       decoration-warning="aiis_payment_status in ('to_pay', 'partial')"
+                       decoration-success="aiis_payment_status == 'paid'"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Approvals" name="aiis_approvals">
+                    <field name="approval_progress_html" nolabel="1"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_tree_aiis_payment" model="ir.ui.view">
+        <field name="name">purchase.order.tree.aiis.payment</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="invoice_status" position="after">
+                <field name="aiis_payment_status" optional="show" widget="badge"
+                       decoration-warning="aiis_payment_status in ('to_pay', 'partial')"
+                       decoration-success="aiis_payment_status == 'paid'"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="purchase_order_search_aiis_approval" model="ir.ui.view">
+        <field name="name">purchase.order.search.aiis.approval</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='my_purchases']" position="after">
+                <filter string="Waiting for My Approval" name="filter_my_approval" domain="[('is_my_approval', '=', True)]"/>
+                <filter string="To Pay" name="filter_to_pay" domain="[('aiis_payment_status', 'in', ('to_pay', 'partial'))]"/>
+                <filter string="Paid" name="filter_paid" domain="[('aiis_payment_status', '=', 'paid')]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,202 @@
+// Brand colour of this database (aiis_theme, from the company primary
+// colour); Odoo's primary colour when the theme is not installed.
+$aiis-brand: $o-brand-primary !default;
+$aiis-brand-strong: darken($aiis-brand, 8%) !default;
+$aiis-brand-dark: darken($aiis-brand, 15%) !default;
+$aiis-dash-green: $aiis-brand-strong;
+$aiis-dash-green-dark: $aiis-brand-dark;
+// Neutral greys with a trace of the brand colour
+$aiis-dash-bg: mix($aiis-brand, #F4F5F5, 4%);
+$aiis-dash-track: mix($aiis-brand, #EFF1F1, 6%);
+$aiis-dash-border: mix($aiis-brand, #DEE2E2, 8%);
+$aiis-dash-muted: #56605C;
+// Fixed meaning, never the brand colour
+$aiis-dash-up: #9A3412;
+$aiis-dash-down: #1D4ED8;
+// Second chart series: away from the brand's colour family
+$aiis-dash-chart-2: if(hue($aiis-brand) > 170deg and hue($aiis-brand) < 270deg, #15803D, #2F6FD0);
+
+.o_aiis_dash {
+    --aiis-chart-1: #{$aiis-dash-green};
+    --aiis-chart-2: #{$aiis-dash-chart-2};
+    background: $aiis-dash-bg;
+    color: #17221D;
+
+    .o_aiis_dash_tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        background: $aiis-dash-green;
+        padding: 6px 20px;
+    }
+    .o_aiis_dash_tab {
+        border: 0;
+        background: transparent;
+        color: #FFFFFF;
+        padding: 10px 14px;
+        border-radius: 6px;
+        min-height: 44px;
+        &:hover { background: rgba(255, 255, 255, 0.12); }
+        &.active { background: rgba(255, 255, 255, 0.2); font-weight: 600; }
+    }
+
+    .o_aiis_dash_body {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 16px 20px 40px;
+    }
+
+    .o_aiis_dash_period {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 20px;
+        background: #FFFFFF;
+        border: 1px solid $aiis-dash-border;
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin-bottom: 16px;
+        .btn-group .btn { min-width: 72px; min-height: 40px; }
+        .btn-primary { background: $aiis-dash-green; border-color: $aiis-dash-green; }
+        select { min-width: 180px; min-height: 40px; }
+    }
+    .o_aiis_dash_arrow { width: 40px; height: 40px; font-size: 18px; line-height: 1; }
+    .o_aiis_dash_title { min-width: 200px; text-align: center; }
+
+    .o_aiis_dash_loading { opacity: 0.55; transition: opacity 0.2s; }
+
+    .o_aiis_dash_cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+    .o_aiis_dash_card {
+        background: #FFFFFF;
+        border: 1px solid $aiis-dash-border;
+        border-radius: 10px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .o_aiis_dash_card_title { margin: 0; font-size: 0.9rem; font-weight: 600; color: #3C4842; }
+    .o_aiis_dash_card_value { font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .o_aiis_dash_card_delta { font-size: 0.82rem; font-weight: 600; color: $aiis-dash-muted; }
+    .o_aiis_dash_card_note { font-size: 0.82rem; color: $aiis-dash-muted; }
+
+    .o_aiis_dash_tag {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        border-radius: 4px;
+        padding: 2px 6px;
+        white-space: nowrap;
+    }
+    .o_aiis_dash_tag_now { color: #1E3A8A; background: #DCE6FB; }
+    .o_aiis_dash_tag_finance { color: #6B3A00; background: #FCE7C8; }
+
+    .o_aiis_tone_up { color: $aiis-dash-up !important; }
+    .o_aiis_tone_down { color: $aiis-dash-down !important; }
+
+    .o_aiis_dash_blocks { display: flex; flex-wrap: wrap; gap: 14px; }
+    .o_aiis_dash_block {
+        background: #FFFFFF;
+        border: 1px solid $aiis-dash-border;
+        border-radius: 10px;
+        padding: 14px 16px;
+        min-width: 0;
+    }
+    .o_aiis_dash_wide { flex: 999 1 640px; }
+    .o_aiis_dash_narrow { flex: 1 1 340px; }
+    .o_aiis_dash_half { flex: 1 1 460px; }
+    .o_aiis_dash_full { flex: 1 1 100%; }
+    .o_aiis_dash_block_title { margin: 0; font-size: 1rem; font-weight: 600; }
+    .o_aiis_dash_block_sub { font-size: 0.82rem; color: $aiis-dash-muted; margin-top: 2px; }
+    .o_aiis_dash_subtitle { font-size: 0.9rem; font-weight: 600; margin: 18px 0 4px; display: flex; gap: 6px; align-items: center; }
+
+    .o_aiis_dash_legend {
+        display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.82rem; margin-top: 10px;
+        > span { display: flex; align-items: center; gap: 6px; }
+    }
+    .o_aiis_dash_swatch { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+
+    .o_aiis_dash_chart { margin-top: 12px; overflow-x: auto; }
+    .o_aiis_dash_chart_bars, .o_aiis_dash_chart_labels {
+        display: flex; gap: 4px; min-width: 560px;
+    }
+    .o_aiis_dash_chart_bars { height: 200px; align-items: flex-end; border-bottom: 1px solid #C9CECE; }
+    .o_aiis_dash_bucket {
+        flex: 1 1 0;
+        height: 100%;
+        border: 0;
+        background: transparent;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        cursor: pointer;
+        &:hover:not(.future) { background: rgba($aiis-dash-green, 0.06); }
+        &.future { cursor: default; }
+    }
+    .o_aiis_dash_caption { font-size: 10px; color: #3C4842; margin-bottom: 3px; white-space: nowrap; }
+    .o_aiis_dash_stack {
+        display: flex; flex-direction: column-reverse; width: 100%; max-width: 26px;
+        &.grouped { flex-direction: row; align-items: flex-end; gap: 2px; max-width: 30px; }
+        .o_aiis_dash_segment { display: block; width: 100%; }
+        &:not(.grouped) .o_aiis_dash_segment:last-child { border-radius: 3px 3px 0 0; }
+        &.grouped .o_aiis_dash_segment { flex: 1 1 0; border-radius: 3px 3px 0 0; }
+    }
+    .o_aiis_dash_chart_labels {
+        padding-top: 4px;
+        > span { flex: 1 1 0; text-align: center; font-size: 11px; color: #3C4842; }
+        .weekend { color: #8A968F; }
+        .today { color: $aiis-dash-green; font-weight: 700; }
+    }
+
+    .o_aiis_dash_barlist { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .o_aiis_dash_barrow {
+        display: grid;
+        grid-template-columns: minmax(110px, 190px) minmax(0, 1fr) minmax(70px, auto);
+        gap: 10px;
+        align-items: center;
+        font-size: 0.9rem;
+    }
+    .o_aiis_dash_track { flex: 1 1 0; display: block; background: $aiis-dash-track; border-radius: 4px; height: 12px; min-width: 60px; }
+    .o_aiis_dash_fill {
+        display: block; height: 12px; border-radius: 4px; background: $aiis-dash-green;
+        &.warn { background: #C2410C; }
+    }
+    .o_aiis_dash_meter_col { width: 220px; }
+    .o_aiis_dash_meter_text { width: 46px; text-align: right; font-weight: 600; }
+
+    .o_aiis_dash_funnel { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+    .o_aiis_dash_funnel_row {
+        display: grid; grid-template-columns: 130px minmax(0, 1fr) 120px; gap: 12px; align-items: center; font-size: 0.9rem;
+    }
+    .o_aiis_dash_funnel_track { display: flex; justify-content: center; background: $aiis-dash-bg; border-radius: 4px; }
+    .o_aiis_dash_funnel_bar {
+        min-width: 36px; height: 30px; border-radius: 4px; background: $aiis-dash-green; color: #FFFFFF;
+        font-weight: 600; display: flex; align-items: center; justify-content: center;
+    }
+
+    .o_aiis_dash_table {
+        margin: 10px 0 0;
+        font-size: 0.9rem;
+        font-variant-numeric: tabular-nums;
+        th { color: $aiis-dash-muted; font-size: 0.78rem; font-weight: 600; border-bottom-width: 1px; }
+        td { vertical-align: middle; padding-top: 8px; padding-bottom: 8px; }
+        a { color: $aiis-dash-green; }
+    }
+    .o_aiis_dash_cell_sub { font-size: 0.78rem; color: $aiis-dash-muted; font-weight: 400; }
+    .o_aiis_dash_badge {
+        font-size: 0.78rem; font-weight: 600; border-radius: 4px; padding: 3px 8px;
+        &.good { background: #D5EFE3; color: #0B5A3F; }
+        &.bad { background: #FCE3D3; color: #8A2C0D; }
+    }
+    .o_aiis_dash_note {
+        border-top: 1px solid #E8EBEB; padding: 10px 0; font-size: 0.9rem;
+        a { color: $aiis-dash-green; }
+    }
+}

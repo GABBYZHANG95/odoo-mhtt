@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The CFO keeps the department budgets and sees every request -->
+    <record id="group_sales_budget_manager" model="res.groups">
+        <field name="name">Sales Expense Budgets (CFO)</field>
+        <field name="category_id" ref="aiis_procurement_request.module_category_po_approval"/>
+    </record>
+
+    <record id="sales_expense_request_rule_user" model="ir.rule">
+        <field name="name">Sales expense request: employee and approvers</field>
+        <field name="model_id" ref="model_aiis_sales_expense_request"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', ('employee_id.user_id', '=', user.id), ('approval_user_ids', 'in', [user.id])]</field>
+    </record>
+
+    <record id="sales_expense_request_rule_all" model="ir.rule">
+        <field name="name">Sales expense request: CFO, expense managers and administrators see all</field>
+        <field name="model_id" ref="model_aiis_sales_expense_request"/>
+        <field name="groups" eval="[(4, ref('group_sales_budget_manager')), (4, ref('hr_expense.group_hr_expense_manager')), (4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Actual expenses listed on a request before the claim (#65): its
+         approvers, the department head and the CFO read them -->
+    <record id="expense_rule_sales_claim" model="ir.rule">
+        <field name="name">Expense: lines of a sales expense claim</field>
+        <field name="model_id" ref="hr_expense.model_hr_expense"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('aiis_sales_request_id', '!=', False), '|',
+            ('aiis_sales_request_id.approval_user_ids', 'in', [user.id]),
+            ('employee_id.department_id.manager_id.user_id', '=', user.id)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="expense_rule_sales_claim_budget" model="ir.rule">
+        <field name="name">Expense: CFO reads sales expense claims</field>
+        <field name="model_id" ref="hr_expense.model_hr_expense"/>
+        <field name="groups" eval="[(4, ref('group_sales_budget_manager'))]"/>
+        <field name="domain_force">[('aiis_sales_request_id', '!=', False)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+</odoo>
