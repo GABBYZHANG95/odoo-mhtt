@@ -28,7 +28,7 @@ docker restart mhtt-app                    # 升级后必须重启，否则还�
 - `config/odoo.conf` — Odoo 配置文件（含数据库连接、管理员密码等，不进 git，请勿外泄）
 - `addons/` — 自定义插件目录（挂载为 `/mnt/extra-addons`），MHTT 的定制模块都在这里（技术名 `aiis_*`）
 - `addons/oca/` — 固定版本的 OCA 模块（财务报表、资产、银行对账等，来源见其中的 README）。`config/odoo.conf` 的 `addons_path` 需要包含它：`addons_path = /mnt/extra-addons,/mnt/extra-addons/oca,/usr/lib/python3/dist-packages/odoo/addons`
-- `branding/` — MHTT logo
+- `branding/` — MHTT logo（`mhtt-logo.png`，透明背景；部署时 `scripts/setup_company_brand.py` 用它设置公司 Logo）
 - `docs/deploy/正式上线计划.md` — 正式上线计划（云服务器、正式库、备份、一个月试用）
 - `scripts/backup.sh` — 备份脚本
 - `scripts/fresh_install_check.sh` — 全新安装检查：临时空库 + 沙特科目表 + 全部模块和测试，每次发布前跑

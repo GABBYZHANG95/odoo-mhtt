@@ -11,7 +11,7 @@ MHTT 用自己的一套代码（本仓库）、自己的云服务器和库，和
 | `env.example` | `.env` 模板：域名、密码、发信地址 |
 | `modules.txt` | 要安装的顶层模块；`scripts/fresh_install_check.sh` 发布前测的是同一份清单 |
 | `first_install.sh` | 建正式库：先装沙特科目表，再装模块；库已存在时拒绝执行 |
-| `brand.env`、`logo.png` | MHTT 品牌：深蓝 #233D7E 和 logo |
+| `brand.env` | MHTT 品牌：深蓝 #233D7E 和 logo |
 | `certs/` | MHTT 的 LDAP 根证书 `ldap-ca.pem` |
 | `crontab.example` | 每晚备份，以及拷回公司内网的第二份备份 |
 
@@ -36,7 +36,7 @@ docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d
 deploy/first_install.sh
 
 # 品牌：logo、深蓝主题色、中英阿公司全称（brand.env）
-docker cp deploy/logo.png mhtt-app:/tmp/brand-logo.png
+docker cp branding/mhtt-logo.png mhtt-app:/tmp/brand-logo.png
 docker exec -u root mhtt-app chmod 644 /tmp/brand-logo.png
 docker exec -i --env-file deploy/brand.env -e BRAND_LOGO=/tmp/brand-logo.png \
     mhtt-app odoo shell -d mhtt --no-http < scripts/setup_company_brand.py

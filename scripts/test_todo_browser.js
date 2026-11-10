@@ -4,7 +4,7 @@ const fs = require('fs');
 const assert = require('assert/strict');
 const meta = JSON.parse(fs.readFileSync(process.env.AIIS_TODO_BROWSER_META || '/tmp/aiis-todo-browser-private.json'));
 const base = process.env.AIIS_TEST_URL;
-const output = process.env.AIIS_BROWSER_OUTPUT || 'docs/test/results/20261104-todo';
+const output = process.env.AIIS_BROWSER_OUTPUT || 'backups/test-results/20261104-todo';
 assert(base, 'An isolated AIIS_TEST_URL is required');
 assert(meta.database.startsWith('aiis_flow_test_'), 'An isolated database is required');
 fs.mkdirSync(output, { recursive: true });

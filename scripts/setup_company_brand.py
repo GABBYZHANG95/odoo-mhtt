@@ -1,9 +1,9 @@
 # Set one database's brand: company logo and brand colour (docs/deploy/
-# 正式上线计划.md, step 5). MHTT's brand is data, kept in deploy/ (brand.env,
-# logo.png).
+# 正式上线计划.md, step 5). MHTT's brand is data, kept in deploy/brand.env and
+# branding/ (logo).
 # Run in odoo shell:
 #
-#   docker cp deploy/logo.png mhtt-app:/tmp/brand-logo.png
+#   docker cp branding/mhtt-logo.png mhtt-app:/tmp/brand-logo.png
 #   docker exec -u root mhtt-app chmod 644 /tmp/brand-logo.png
 #   docker exec -i --env-file deploy/brand.env -e BRAND_LOGO=/tmp/brand-logo.png \
 #       mhtt-app odoo shell -d mhtt --no-http < scripts/setup_company_brand.py

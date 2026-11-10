@@ -2,7 +2,7 @@
 const {chromium}=require(process.env.AIIS_PLAYWRIGHT_PACKAGE);
 const fs=require('fs');
 const meta=JSON.parse(fs.readFileSync('/tmp/aiis-browser-private.json','utf8'));
-const out=process.env.AIIS_BROWSER_OUTPUT||'docs/test/results/20261027';
+const out=process.env.AIIS_BROWSER_OUTPUT||'backups/test-results/20261027';
 fs.mkdirSync(out,{recursive:true});
 const results=[];
 const base=process.env.AIIS_TEST_URL;

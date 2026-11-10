@@ -4,7 +4,7 @@ const assert = require('assert/strict');
 const meta = JSON.parse(fs.readFileSync('/tmp/aiis-supplier-terms-private.json'));
 const base = process.env.AIIS_TEST_URL;
 assert(base && meta.database.startsWith('aiis_flow_test_'), 'Isolated server and database required');
-const out = 'docs/test/results/20261104-supplier-terms';
+const out = 'backups/test-results/20261104-supplier-terms';
 fs.mkdirSync(out, { recursive: true });
 (async () => {
     const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
